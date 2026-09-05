@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import sys
 from collections import Counter
 from pathlib import Path
@@ -64,24 +65,54 @@ def execute_action(
     return _no_action(transaction, f"Unhandled action {action}; no side effect.")
 
 
-def predict_batch(holdout: pd.DataFrame) -> pd.Series:
+def _as_python(value: Any) -> Any:
+    if hasattr(value, "item"):
+        try:
+            return value.item()
+        except (ValueError, AttributeError):
+            pass
+    return value
+
+
+def predict_with_confidence(frame: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
     bundle = load_bundle()
-    encoded = bundle["model"].predict(bundle["transformer"].transform(holdout))
+    proba = bundle["model"].predict_proba(bundle["transformer"].transform(frame))
+    encoded = proba.argmax(axis=1)
     labels = bundle["label_encoder"].inverse_transform(encoded)
-    return pd.Series(labels, index=holdout.index, name="predicted_root_cause")
+    return (
+        pd.Series(labels, index=frame.index, name="predicted_root_cause"),
+        pd.Series(proba.max(axis=1), index=frame.index, name="classifier_confidence"),
+    )
+
+
+def predict_batch(holdout: pd.DataFrame) -> pd.Series:
+    labels, _confidence = predict_with_confidence(holdout)
+    return labels
+
+
+def predict_one(row: dict[str, Any]) -> tuple[str, float]:
+    frame = pd.DataFrame([row])
+    labels, confidence = predict_with_confidence(frame)
+    return str(labels.iloc[0]), float(confidence.iloc[0])
 
 
 def process_transaction(row: dict[str, Any]) -> dict[str, Any]:
-    predicted = str(row["predicted_root_cause"])
+    row = {key: _as_python(value) for key, value in dict(row).items()}
+    predicted = row.get("predicted_root_cause")
+    confidence = row.get("classifier_confidence")
+    if predicted is None or predicted == "" or confidence is None:
+        predicted, confidence = predict_one(row)
+    predicted = str(predicted)
+    confidence = float(confidence)
     model_action = recommend_action(predicted)
     decision = decide(row, model_action)
     # Stash prediction so mandate routing can see it.
-    row = dict(row)
     row["predicted_root_cause"] = predicted
     result = execute_action(row, decision)
     record = {
-        "transaction_id": row.get("transaction_id"),
+        "transaction_id": str(row.get("transaction_id") or ""),
         "predicted_root_cause": predicted,
+        "classifier_confidence": round(confidence, 4),
         "model_recommended_action": model_action,
         "override_fired": decision.override_fired,
         "final_action_taken": decision.final_action,
@@ -89,13 +120,31 @@ def process_transaction(row: dict[str, Any]) -> dict[str, Any]:
         "action_result": result,
         "amount": float(row.get("amount") or 0),
         "amount_recovered": float(result.get("amount_recovered") or 0),
-        "retry_attempt_number": decision.retry_attempt_number,
+        "retry_attempt_number": int(decision.retry_attempt_number),
         "true_root_cause_category": row.get(TARGET),
         "failure_code": row.get("failure_code"),
-        "execute_retry": decision.execute_retry,
+        "execute_retry": bool(decision.execute_retry),
+        "retry_cap": MAX_RETRY_ATTEMPTS,
     }
     log_decision(record)
     return record
+
+
+def load_holdout_row(transaction_id: str) -> dict[str, Any]:
+    holdout = pd.read_csv(HOLDOUT_PATH)
+    matched = holdout[holdout["transaction_id"].astype(str) == str(transaction_id)]
+    if matched.empty:
+        raise KeyError(f"transaction_id {transaction_id!r} is not in {HOLDOUT_PATH}")
+    return {key: _as_python(value) for key, value in matched.iloc[0].to_dict().items()}
+
+
+def process_transaction_id(transaction_id: str) -> dict[str, Any]:
+    """Classify and act on one holdout row; append to the audit log (no reset)."""
+    row = load_holdout_row(transaction_id)
+    predicted, confidence = predict_one(row)
+    row["predicted_root_cause"] = predicted
+    row["classifier_confidence"] = confidence
+    return process_transaction(row)
 
 
 def wasted_retry_cost(records: list[dict[str, Any]]) -> tuple[float, int]:
@@ -148,9 +197,27 @@ def print_batch_checks(records: list[dict[str, Any]]) -> None:
     )
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(description="Revenue recovery orchestrator")
+    parser.add_argument(
+        "--transaction-id",
+        help="Process a single holdout transaction and append to the audit log",
+    )
+    args = parser.parse_args(argv)
+
+    if args.transaction_id:
+        record = process_transaction_id(args.transaction_id)
+        print(
+            f"{record['transaction_id']}  {record['predicted_root_cause']}  "
+            f"{record['final_action_taken']}  recovered={record['amount_recovered']:.2f}"
+        )
+        print(f"Appended {AUDIT_PATH}")
+        return
+
     holdout = pd.read_csv(HOLDOUT_PATH)
-    holdout["predicted_root_cause"] = predict_batch(holdout)
+    labels, confidence = predict_with_confidence(holdout)
+    holdout["predicted_root_cause"] = labels
+    holdout["classifier_confidence"] = confidence
     reset_log()
     records = []
     for row in holdout.to_dict(orient="records"):

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revenue Recovery Agent — Live Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Design tokens ─── */
+    :root {
+      --bg:            #060b14;
+      --bg-elevated:   #0b1220;
+      --bg-card:       #0f1829;
+      --bg-card-h:     #131e35;
+      --line:          rgba(255,255,255,0.07);
+      --line-strong:   rgba(255,255,255,0.13);
+
+      --text:   #e8edf5;
+      --muted:  #8a97ac;
+      --faint:  #4e5d72;
+
+      --accent:      #56e0b0;      /* recovered / good */
+      --accent-dim:  rgba(86,224,176,0.12);
+      --accent-ring: rgba(86,224,176,0.25);
+
+      --warn:      #f6c642;        /* open / at-risk */
+      --warn-dim:  rgba(246,198,66,0.12);
+
+      --danger:      #ff637a;      /* escalated / failed */
+      --danger-dim:  rgba(255,99,122,0.12);
+      --danger-ring: rgba(255,99,122,0.25);
+
+      --info:       #6db4ff;       /* classifier */
+      --info-dim:   rgba(109,180,255,0.12);
+
+      --violet:     #b39dfd;       /* policy */
+      --violet-dim: rgba(179,157,253,0.12);
+
+      --shadow-card: 0 20px 60px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3);
+      --radius: 20px;
+      --radius-sm: 12px;
+      --mono: "IBM Plex Mono", "Cascadia Code", ui-monospace, monospace;
+      --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+
+      /* Glow tracks */
+      --track-recovered: linear-gradient(90deg, transparent 0%, rgba(86,224,176,0.06) 50%, transparent 100%);
+      --track-escalated: linear-gradient(90deg, transparent 0%, rgba(255,99,122,0.06) 50%, transparent 100%);
+    }
+
+    /* ─── Reset & base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.5;
+      background:
+        radial-gradient(ellipse 1400px 500px at 75% -15%, rgba(86,224,176,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 800px 600px at -5% 105%, rgba(109,180,255,0.07) 0%, transparent 60%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ─── Shell ─── */
+    .shell {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 30px 24px 56px;
+    }
+
+    /* ─── Header ─── */
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 26px;
+      flex-wrap: wrap;
+    }
+    .brand { flex: 1 1 280px; }
+    .brand h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.2;
+    }
+    .brand h1 span { color: var(--accent); }
+    .brand p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      letter-spacing: 0.01em;
+    }
+
+    /* ─── WS connection pill ─── */
+    .conn-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      transition: border-color 0.3s, color 0.3s;
+      white-space: nowrap;
+    }
+    .conn-pill.live  { border-color: var(--accent-ring); color: var(--accent); }
+    .conn-pill.dead  { border-color: var(--danger-ring); color: var(--danger); }
+    .conn-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--faint);
+      flex-shrink: 0;
+    }
+    .conn-pill.live  .conn-dot {
+      background: var(--accent);
+      animation: pulse-dot 1.8s ease-out infinite;
+    }
+    .conn-pill.dead  .conn-dot { background: var(--danger); }
+    @keyframes pulse-dot {
+      0%   { box-shadow: 0 0 0 0    var(--accent-ring); }
+      60%  { box-shadow: 0 0 0 6px  transparent; }
+      100% { box-shadow: 0 0 0 0    transparent; }
+    }
+
+    /* ─── Stats row ─── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .stat {
+      background: var(--bg-elevated);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+      transition: border-color 0.25s;
+    }
+    .stat:hover { border-color: var(--line-strong); }
+    .stat .label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+    .stat .value {
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      transition: color 0.4s;
+    }
+    .stat .sub {
+      margin-top: 3px;
+      font-size: 0.72rem;
+      color: var(--faint);
+      font-family: var(--mono);
+    }
+    #statN    { color: var(--text); }
+    #statRisk { color: var(--warn); }
+    #statRec  { color: var(--accent); }
+    #statRate { color: var(--info); }
+
+    /* Rate colour shifts */
+    #statRate.rate-good   { color: var(--accent); }
+    #statRate.rate-warn   { color: var(--warn); }
+    #statRate.rate-danger { color: var(--danger); }
+
+    /* ─── Feed ─── */
+    .feed-wrap { position: relative; }
+    .feed {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Empty state */
+    .empty-state {
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius);
+      padding: 52px 24px;
+      text-align: center;
+      background: rgba(255,255,255,0.012);
+    }
+    .empty-state .ei {
+      font-size: 2.4rem;
+      margin-bottom: 12px;
+      filter: grayscale(0.4);
+    }
+    .empty-state strong {
+      display: block;
+      font-size: 1.05rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .empty-state p {
+      color: var(--muted);
+      font-size: 0.875rem;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    .empty-state code {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--accent);
+      background: var(--accent-dim);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    /* ─── Transaction card ─── */
+    .card {
+      background: linear-gradient(160deg, var(--bg-card-h) 0%, var(--bg-card) 100%);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      animation: card-in 0.4s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .card.recovered {
+      border-color: rgba(86,224,176,0.25);
+      background: linear-gradient(160deg, rgba(86,224,176,0.04) 0%, var(--bg-card) 60%);
+    }
+    .card.escalated {
+      border-color: rgba(255,99,122,0.25);
+      background: linear-gradient(160deg, rgba(255,99,122,0.04) 0%, var(--bg-card) 60%);
+    }
+    .card.replay {
+      animation: none;
+      opacity: 0.85;
+    }
+    .card.replay:hover { opacity: 1; }
+
+    /* Card header */
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px 12px;
+      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+    .card-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .txn-id {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .replay-badge {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      border: 1px solid var(--line-strong);
+      border-radius: 4px;
+      padding: 1px 5px;
+    }
+    .card-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .amount {
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Status pill */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .pill.ok   { background: var(--accent-dim);  color: var(--accent);  border: 1px solid var(--accent-ring); }
+    .pill.bad  { background: var(--danger-dim);  color: var(--danger);  border: 1px solid var(--danger-ring); }
+    .pill.warn { background: var(--warn-dim);    color: var(--warn);    border: 1px solid rgba(246,198,66,0.3); }
+
+    /* ─── Steps ─── */
+    .steps { padding: 6px 12px 18px; }
+    .step {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 12px;
+      padding: 10px 8px;
+      border-radius: 8px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s ease, transform 0.4s ease, background 0.2s;
+    }
+    .step.show { opacity: 1; transform: none; }
+    .step:hover { background: rgba(255,255,255,0.025); }
+
+    /* Rail dot */
+    .rail {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 5px;
+    }
+    .rail-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--faint);
+      flex-shrink: 0;
+    }
+    .rail-line {
+      width: 1px;
+      flex: 1;
+      background: var(--line);
+      margin-top: 4px;
+      min-height: 12px;
+    }
+    .step:last-child .rail-line { display: none; }
+
+    /* Step colours */
+    .step.s0 .rail-dot { background: var(--warn);   box-shadow: 0 0 6px rgba(246,198,66,0.4); }
+    .step.s1 .rail-dot { background: var(--info);   box-shadow: 0 0 6px rgba(109,180,255,0.4); }
+    .step.s2 .rail-dot { background: var(--violet); box-shadow: 0 0 6px rgba(179,157,253,0.4); }
+    .step.s3 .rail-dot { background: var(--accent); box-shadow: 0 0 6px rgba(86,224,176,0.4); }
+    .step.s4 .rail-dot { background: var(--text); }
+
+    /* Step content */
+    .step-body { min-width: 0; }
+    .step-label {
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .step.s0 .step-label { color: var(--warn); }
+    .step.s1 .step-label { color: var(--info); }
+    .step.s2 .step-label { color: var(--violet); }
+    .step.s3 .step-label { color: var(--accent); }
+    .step.s4 .step-label { color: var(--muted); }
+
+    .step-text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text);
+      word-break: break-word;
+    }
+    .step-text em {
+      font-style: normal;
+      font-family: var(--mono);
+      font-size: 0.87em;
+      color: var(--text);
+      background: rgba(255,255,255,0.05);
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+    /* Highlight key numbers in result line */
+    .step.s4 .step-text em.amount-hi {
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .step.s4 .step-text em.stop-hi {
+      color: var(--danger);
+      background: var(--danger-dim);
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 800px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+      header { flex-direction: column; align-items: flex-start; }
+      .conn-pill { align-self: flex-start; }
+      .card-head { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 480px) {
+      .stats { grid-template-columns: 1fr; }
+      .step { grid-template-columns: 22px 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <!-- ── Header ── -->
+    <header>
+      <div class="brand">
+        <h1>Revenue Recovery <span>Agent</span></h1>
+        <p>Bounded · Explainable · Audited — classify, apply policy, act once, record forever.</p>
+      </div>
+      <div class="conn-pill" id="connPill">
+        <div class="conn-dot"></div>
+        <span id="connLabel">connecting…</span>
+      </div>
+    </header>
+
+    <!-- ── Stats bar ── -->
+    <section class="stats" aria-label="Summary metrics">
+      <div class="stat">
+        <div class="label">Transactions</div>
+        <div class="value" id="statN">0</div>
+        <div class="sub" id="statNSub">processed</div>
+      </div>
+      <div class="stat">
+        <div class="label">At risk</div>
+        <div class="value" id="statRisk">₹0</div>
+        <div class="sub">total exposure</div>
+      </div>
+      <div class="stat">
+        <div class="label">Recovered</div>
+        <div class="value" id="statRec">₹0</div>
+        <div class="sub">captured on retry</div>
+      </div>
+      <div class="stat">
+        <div class="label">Recovery rate</div>
+        <div class="value" id="statRate">0%</div>
+        <div class="sub">of at-risk ₹</div>
+      </div>
+    </section>
+
+    <!-- ── Transaction feed ── -->
+    <div class="feed-wrap">
+      <div class="feed" id="feed" role="feed" aria-live="polite" aria-label="Transaction events">
+        <div class="empty-state" id="emptyState">
+          <div class="ei">⚡</div>
+          <strong>Dashboard idle — waiting for events</strong>
+          <p>
+            Trigger a transaction in a second terminal:<br>
+            <code>python demo/seed_failure_case.py recover</code>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    "use strict";
+
+    /* ── Formatters ── */
+    const inr = (n) =>
+      "₹" + Number(n || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 });
+
+    const pct = (x) => Math.round(Number(x || 0) * 100);
+
+    const shortId = (id) => {
+      const s = String(id || "");
+      return s.length > 13 ? s.slice(0, 8) + "…" : s;
+    };
+
+    /* ── Action label map ── */
+    const ACTION_LABEL = {
+      RETRY_IMMEDIATE:        "retry_payment",
+      RETRY_DELAYED_24H:      "retry_payment (delayed 24h)",
+      RETRY_DELAYED_72H:      "retry_payment (delayed 72h)",
+      SEND_NUDGE:             "send_nudge",
+      ESCALATE_HUMAN:         "escalate_human",
+      NO_ACTION_UNRECOVERABLE:"no_action",
+    };
+
+    /* ── Policy summary line ── */
+    function policyLine(rec) {
+      const cap     = rec.retry_cap || 3;
+      const attempt = rec.retry_attempt_number || 0;
+      const action  = rec.final_action_taken;
+      if (action === "ESCALATE_HUMAN") {
+        return rec.override_fired
+          ? `retry blocked — safety override fired (${attempt}/${cap} attempts used)`
+          : `escalate to human (${attempt}/${cap} attempts used)`;
+      }
+      if (action === "NO_ACTION_UNRECOVERABLE") return "no retry — permanent failure, loop stopped";
+      if (action === "SEND_NUDGE")              return "nudge only — do not auto-retry this cycle";
+      if (rec.execute_retry)  return `retry allowed (${attempt}/${cap} attempts)`;
+      return `retry deferred (${attempt}/${cap} attempts — waiting on backoff)`;
+    }
+
+    /* ── Result summary line ── */
+    function resultLine(rec) {
+      const recovered = Number(rec.amount_recovered || 0);
+      const status    = (rec.action_result && rec.action_result.status) || "";
+      const action    = rec.final_action_taken;
+      if (recovered > 0) return { text: `recovered ${inr(recovered)}`, cls: "amount-hi" };
+      if (status === "escalated" || action === "ESCALATE_HUMAN")
+        return { text: "escalated to a human — no retry loop", cls: "stop-hi" };
+      if (action === "NO_ACTION_UNRECOVERABLE")
+        return { text: "unrecoverable — marked closed, no further retries", cls: "stop-hi" };
+      if (status === "nudge_logged") return { text: "nudge queued — awaiting customer action", cls: "" };
+      if (status === "deferred")     return { text: "held for backoff — not hammering the bank", cls: "" };
+      return { text: "not recovered this cycle", cls: "" };
+    }
+
+    /* ── Build the 5 step rows ── */
+    function stepsFor(rec) {
+      const code   = rec.failure_code || "unknown";
+      const cause  = rec.predicted_root_cause || "UNKNOWN";
+      const conf   = pct(rec.classifier_confidence);
+      const action = ACTION_LABEL[rec.final_action_taken] || (rec.final_action_taken || "").toLowerCase();
+      const result = resultLine(rec);
+      return [
+        {
+          label: "Transaction",
+          text:  `Transaction <em>${shortId(rec.transaction_id)}</em> failed (<em>${code}</em>)`,
+        },
+        {
+          label: "Classifier",
+          text:  `<em>${cause}</em> — ${conf}% confidence`,
+        },
+        {
+          label: "Policy",
+          text:  policyLine(rec),
+        },
+        {
+          label: "Action",
+          text:  `<em>${action}</em>`,
+        },
+        {
+          label: "Result",
+          text:  result.cls
+            ? `<em class="${result.cls}">${result.text}</em>`
+            : result.text,
+        },
+      ];
+    }
+
+    /* ── State ── */
+    const feed      = document.getElementById("feed");
+    const emptyEl   = document.getElementById("emptyState");
+    const connPill  = document.getElementById("connPill");
+    const connLabel = document.getElementById("connLabel");
+    const latest    = new Map();   // transaction_id → record (deduplicates replays)
+    let   emptyGone = false;
+
+    /* ── Connection indicator ── */
+    function setConn(state, label) {
+      connPill.className = "conn-pill " + state;
+      connLabel.textContent = label;
+    }
+
+    /* ── Stats refresh ── */
+    function refreshStats() {
+      let risk = 0, rec = 0;
+      latest.forEach((r) => {
+        risk += Number(r.amount || 0);
+        rec  += Number(r.amount_recovered || 0);
+      });
+      const n    = latest.size;
+      const rate = risk ? (rec / risk) * 100 : 0;
+
+      document.getElementById("statN").textContent    = String(n);
+      document.getElementById("statNSub").textContent = n === 1 ? "processed" : "processed";
+      document.getElementById("statRisk").textContent = inr(risk);
+      document.getElementById("statRec").textContent  = inr(rec);
+
+      const rateEl = document.getElementById("statRate");
+      rateEl.textContent  = rate.toFixed(1) + "%";
+      rateEl.className    = "value " +
+        (rate >= 30 ? "rate-good" : rate >= 10 ? "rate-warn" : "rate-danger");
+    }
+
+    /* ── Render a single transaction card ── */
+    function renderCard(rec, animate) {
+      // Remove empty-state placeholder
+      if (!emptyGone && emptyEl && emptyEl.parentNode) {
+        emptyEl.remove();
+        emptyGone = true;
+      }
+
+      const recovered = Number(rec.amount_recovered || 0) > 0;
+      const escalated =
+        rec.final_action_taken === "ESCALATE_HUMAN" ||
+        rec.final_action_taken === "NO_ACTION_UNRECOVERABLE";
+
+      /* Card element */
+      const card = document.createElement("article");
+      card.className =
+        "card" +
+        (recovered ? " recovered" : escalated ? " escalated" : "") +
+        (!animate ? " replay" : "");
+      card.dataset.txn = rec.transaction_id;
+
+      /* Header */
+      const pillCls  = recovered ? "ok" : escalated ? "bad" : "warn";
+      const pillText = recovered
+        ? "✓ recovered"
+        : rec.final_action_taken === "ESCALATE_HUMAN"
+          ? "↑ escalated"
+          : rec.final_action_taken === "NO_ACTION_UNRECOVERABLE"
+            ? "✗ stopped"
+            : "○ open";
+
+      const head = document.createElement("div");
+      head.className = "card-head";
+      head.innerHTML =
+        `<div class="card-left">
+           <span class="txn-id">${rec.transaction_id}</span>
+           ${!animate ? '<span class="replay-badge">replay</span>' : ""}
+         </div>
+         <div class="card-right">
+           <span class="amount">${inr(rec.amount)}</span>
+           <span class="pill ${pillCls}">${pillText}</span>
+         </div>`;
+      card.appendChild(head);
+
+      /* Steps */
+      const stepsWrap = document.createElement("div");
+      stepsWrap.className = "steps";
+      const rows = stepsFor(rec);
+      rows.forEach((row, i) => {
+        const el = document.createElement("div");
+        el.className = `step s${i}${animate ? "" : " show"}`;
+        el.innerHTML =
+          `<div class="rail">
+             <div class="rail-dot"></div>
+             <div class="rail-line"></div>
+           </div>
+           <div class="step-body">
+             <div class="step-label">${row.label}</div>
+             <div class="step-text">${row.text}</div>
+           </div>`;
+        stepsWrap.appendChild(el);
+      });
+      card.appendChild(stepsWrap);
+      feed.appendChild(card);
+
+      /* Animate steps in sequence */
+      if (animate) {
+        const stepEls = stepsWrap.querySelectorAll(".step");
+        stepEls.forEach((el, i) => {
+          setTimeout(() => el.classList.add("show"), 300 + i * 480);
+        });
+      }
+
+      /* Auto-scroll */
+      requestAnimationFrame(() => {
+        card.scrollIntoView({ behavior: animate ? "smooth" : "instant", block: "end" });
+      });
+    }
+
+    /* ── Handle an incoming audit record ── */
+    function onRecord(rec, replay) {
+      if (!rec || !rec.transaction_id) return;
+      const tid = String(rec.transaction_id);
+
+      if (latest.has(tid)) {
+        // Update existing card in place (e.g. a live trigger over an already-replayed row)
+        const existing = feed.querySelector(`[data-txn="${tid}"]`);
+        if (existing) existing.remove();
+      }
+      latest.set(tid, rec);
+      renderCard(rec, !replay);
+      refreshStats();
+    }
+
+    /* ── WebSocket connection with auto-reconnect ── */
+    let retryDelay = 1000;
+
+    function connect() {
+      const proto = location.protocol === "https:" ? "wss" : "ws";
+      const ws = new WebSocket(`${proto}://${location.host}/ws`);
+
+      ws.onopen = () => {
+        retryDelay = 1000;
+        setConn("live", "live · tailing audit_log.jsonl");
+      };
+
+      ws.onclose = () => {
+        setConn("dead", `disconnected · reconnecting in ${(retryDelay / 1000).toFixed(1)}s`);
+        setTimeout(connect, retryDelay);
+        retryDelay = Math.min(retryDelay * 1.5, 8000);
+      };
+
+      ws.onerror = () => ws.close();
+
+      ws.onmessage = (ev) => {
+        let msg;
+        try { msg = JSON.parse(ev.data); } catch { return; }
+        if (msg.type === "audit_record" && msg.record) {
+          onRecord(msg.record, Boolean(msg.replay));
+        }
+      };
+    }
+
+    connect();
+  </script>
+</body>
+</html>

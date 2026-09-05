@@ -1,0 +1,598 @@
+{
+  "audit_events": 64,
+  "total_transactions_processed": 60,
+  "transactions_recovered": 7,
+  "transactions_not_recovered": 53,
+  "total_amount_at_risk_inr": 164842.17,
+  "total_amount_recovered_inr": 11559.42,
+  "recovery_rate_pct": 7.01,
+  "actions_taken": {
+    "SEND_NUDGE": 31,
+    "NO_ACTION_UNRECOVERABLE": 4,
+    "RETRY_IMMEDIATE": 21,
+    "ESCALATE_HUMAN": 4
+  },
+  "actions_with_recovery": {
+    "SEND_NUDGE": {
+      "count": 31,
+      "recovered_inr": 0.0
+    },
+    "NO_ACTION_UNRECOVERABLE": {
+      "count": 4,
+      "recovered_inr": 0.0
+    },
+    "RETRY_IMMEDIATE": {
+      "count": 21,
+      "recovered_inr": 11559.420000000002
+    },
+    "ESCALATE_HUMAN": {
+      "count": 4,
+      "recovered_inr": 0.0
+    }
+  },
+  "wasted_retry_cost_inr": 60.0,
+  "wasted_retry_attempts": 12,
+  "retry_gateway_fee_per_attempt_inr": 5.0,
+  "false_positive_cost": {
+    "available": true,
+    "source": "phase2_holdout_evaluation",
+    "holdout_rows": 60,
+    "misclassified_rows": 9,
+    "fp_fn_cost_inr": 16647.64,
+    "recoverable_rupees_written_off_inr": 923.81,
+    "false_positive_detail": "Rows where classifier predicted PERMANENT_FAILURE but true label was recoverable \u2014 money that would have been written off unnecessarily.",
+    "misclassified_transaction_ids": [
+      "d8e7012f-3968-4c81-bb70-c3b8a81fdec3",
+      "48603b32-b4fb-4eb9-89c1-3de73b4206c5",
+      "409d3602-5084-4242-968b-1625746f7891",
+      "c3c75611-ffe3-4a49-854f-92fff366bad4",
+      "9be71737-06b8-4231-8e86-7f3ca487eeab",
+      "8a4b8f7c-2147-4a15-bcce-96f6250a4578",
+      "618ae305-95a5-4afa-831d-029fac1e86d8",
+      "2812859a-1337-439e-8d4f-5d272c7f0b79",
+      "46a02a9b-65ec-4acd-8f80-35f55bd20c98"
+    ]
+  },
+  "unresolved_or_escalated_count": 53,
+  "unresolved_kind_breakdown": {
+    "awaiting_customer": 31,
+    "unrecoverable": 4,
+    "retry_failed": 12,
+    "deferred_backoff": 2,
+    "escalated": 4
+  },
+  "unresolved_or_escalated": [
+    {
+      "transaction_id": "98a21f1c-914d-4fae-b100-13a7c6deb2f0",
+      "kind": "awaiting_customer",
+      "amount_inr": 5405.55,
+      "failure_code": "expired_mandate",
+      "predicted_root_cause": "MANDATE_EXPIRED",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "[nudge en] Your e-mandate for INR 5405.55 has expired. Please re-authorize the mandate so we can collect the payment. | [nudge hinglish] Aapka e-mandate (INR 5405.55) expire ho chuka hai. Kripya naya mandate authorize karein taaki payment complete ho sake."
+    },
+    {
+      "transaction_id": "c257cf73-c29d-482b-a722-796e9a36d1ec",
+      "kind": "awaiting_customer",
+      "amount_inr": 4303.67,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (1/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 4303.67 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 4303.67 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "2303f6c6-d69d-42f1-ae4c-84ffa8c01f05",
+      "kind": "awaiting_customer",
+      "amount_inr": 1005.57,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 1005.57 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 1005.57 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "7de31a51-6694-4343-90ba-58e3d2762bdc",
+      "kind": "awaiting_customer",
+      "amount_inr": 6661.6,
+      "failure_code": "card_declined",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (2/3) has not been hit.",
+      "action_detail": "[nudge en] We could not complete your payment of INR 6661.60. Please retry with an updated payment method if this continues. | [nudge hinglish] Aapka INR 6661.60 ka payment complete nahi ho paya. Kripya updated payment method se retry karein."
+    },
+    {
+      "transaction_id": "7ed70ed7-b194-490b-a961-929e546e035a",
+      "kind": "awaiting_customer",
+      "amount_inr": 2854.73,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 2854.73 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 2854.73 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "34885a46-9088-4eaf-8977-6598203c8c25",
+      "kind": "awaiting_customer",
+      "amount_inr": 2664.03,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (1/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 2664.03 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 2664.03 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "71d79665-7181-4dcf-b79e-fc6e5edb0d3c",
+      "kind": "unrecoverable",
+      "amount_inr": 798.17,
+      "failure_code": "invalid_vpa",
+      "predicted_root_cause": "PERMANENT_FAILURE",
+      "final_action_taken": "NO_ACTION_UNRECOVERABLE",
+      "reason": "No safety override. Using the classifier's recommendation NO_ACTION_UNRECOVERABLE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "Marked unrecoverable; skipping automated retry and nudge."
+    },
+    {
+      "transaction_id": "47503f1d-c33a-4f6c-9d69-1fba5e187b24",
+      "kind": "awaiting_customer",
+      "amount_inr": 1978.98,
+      "failure_code": "card_declined",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "[nudge en] We could not complete your payment of INR 1978.98. Please retry with an updated payment method if this continues. | [nudge hinglish] Aapka INR 1978.98 ka payment complete nahi ho paya. Kripya updated payment method se retry karein."
+    },
+    {
+      "transaction_id": "40a26c60-0d27-4659-b72a-da9b2f32751e",
+      "kind": "awaiting_customer",
+      "amount_inr": 1306.87,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (2/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 1306.87 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 1306.87 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "085b15fb-4a8f-4810-b84c-2f29980402a2",
+      "kind": "unrecoverable",
+      "amount_inr": 772.39,
+      "failure_code": "invalid_vpa",
+      "predicted_root_cause": "PERMANENT_FAILURE",
+      "final_action_taken": "NO_ACTION_UNRECOVERABLE",
+      "reason": "No safety override. Using the classifier's recommendation NO_ACTION_UNRECOVERABLE because this is not a risk_decline and the retry cap (1/3) has not been hit.",
+      "action_detail": "Marked unrecoverable; skipping automated retry and nudge."
+    },
+    {
+      "transaction_id": "f387e1bd-2d59-42c6-934a-5a2fa7cf705c",
+      "kind": "retry_failed",
+      "amount_inr": 975.83,
+      "failure_code": "network_error",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (268.4h since last failure).",
+      "action_detail": "Mock payment pay_mock_20050BF965 failed (network_error: Network error while contacting the acquirer.)"
+    },
+    {
+      "transaction_id": "1777e8cb-7468-4b98-92fe-2fded918b3e5",
+      "kind": "deferred_backoff",
+      "amount_inr": 3165.31,
+      "failure_code": "bank_timeout",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 3/3, but the minimum backoff is 72 hours since the last failure and only 68.7 hours have passed. Deferring the retry; not calling the payment API this cycle.",
+      "action_detail": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 3/3, but the minimum backoff is 72 hours since the last failure and only 68.7 hours have passed. Deferring the retry; not calling the payment API this cycle."
+    },
+    {
+      "transaction_id": "771ad655-cdfc-4ee0-a61e-de900267deb3",
+      "kind": "escalated",
+      "amount_inr": 243.93,
+      "failure_code": "risk_decline",
+      "predicted_root_cause": "RISK_BLOCKED",
+      "final_action_taken": "ESCALATE_HUMAN",
+      "reason": "SAFETY OVERRIDE fired: raw failure_code is risk_decline, so this payment is forced to ESCALATE_HUMAN and must not be auto-retried, even though the classifier recommended ESCALATE_HUMAN.",
+      "action_detail": "Queued for human review; auto-retry disabled for this payment."
+    },
+    {
+      "transaction_id": "48603b32-b4fb-4eb9-89c1-3de73b4206c5",
+      "kind": "retry_failed",
+      "amount_inr": 2593.45,
+      "failure_code": "network_error",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 1/3 after the 2h backoff elapsed (224.2h since last failure).",
+      "action_detail": "Mock payment pay_mock_A1AED955EB failed (network_error: Network error while contacting the acquirer.)"
+    },
+    {
+      "transaction_id": "a1a27485-7134-4c2a-b80b-3657117b355b",
+      "kind": "retry_failed",
+      "amount_inr": 7626.43,
+      "failure_code": "network_error",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (263.1h since last failure).",
+      "action_detail": "Mock payment pay_mock_0B95442EEE failed (network_error: Network error while contacting the acquirer.)"
+    },
+    {
+      "transaction_id": "989240ac-e689-43a9-89e4-8e8c25c61c45",
+      "kind": "retry_failed",
+      "amount_inr": 1769.72,
+      "failure_code": "bank_timeout",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 3/3 after the 72h backoff elapsed (263.6h since last failure).",
+      "action_detail": "Mock payment pay_mock_7C14E40EA6 failed (bank_timeout: The bank did not respond in time.)"
+    },
+    {
+      "transaction_id": "de8ede0b-a85c-4e4a-804b-6fabfcf56188",
+      "kind": "awaiting_customer",
+      "amount_inr": 889.5,
+      "failure_code": "expired_mandate",
+      "predicted_root_cause": "MANDATE_EXPIRED",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (1/3) has not been hit.",
+      "action_detail": "[nudge en] Your e-mandate for INR 889.50 has expired. Please re-authorize the mandate so we can collect the payment. | [nudge hinglish] Aapka e-mandate (INR 889.50) expire ho chuka hai. Kripya naya mandate authorize karein taaki payment complete ho sake."
+    },
+    {
+      "transaction_id": "88575117-6155-4667-a112-507c2cfa55b0",
+      "kind": "awaiting_customer",
+      "amount_inr": 1224.0,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (1/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 1224.00 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 1224.00 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "409d3602-5084-4242-968b-1625746f7891",
+      "kind": "awaiting_customer",
+      "amount_inr": 1480.42,
+      "failure_code": "card_declined",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "[nudge en] We could not complete your payment of INR 1480.42. Please retry with an updated payment method if this continues. | [nudge hinglish] Aapka INR 1480.42 ka payment complete nahi ho paya. Kripya updated payment method se retry karein."
+    },
+    {
+      "transaction_id": "c3c75611-ffe3-4a49-854f-92fff366bad4",
+      "kind": "retry_failed",
+      "amount_inr": 1992.96,
+      "failure_code": "network_error",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 3/3 after the 72h backoff elapsed (298.6h since last failure).",
+      "action_detail": "Mock payment pay_mock_3B0F486EC0 failed (network_error: Network error while contacting the acquirer.)"
+    },
+    {
+      "transaction_id": "f065c817-687a-4850-9d9b-62317d45d8ef",
+      "kind": "awaiting_customer",
+      "amount_inr": 1283.07,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 1283.07 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 1283.07 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "c478f6f1-b88e-4318-816d-83edad81f8bd",
+      "kind": "awaiting_customer",
+      "amount_inr": 16563.11,
+      "failure_code": "card_declined",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (1/3) has not been hit.",
+      "action_detail": "[nudge en] We could not complete your payment of INR 16563.11. Please retry with an updated payment method if this continues. | [nudge hinglish] Aapka INR 16563.11 ka payment complete nahi ho paya. Kripya updated payment method se retry karein."
+    },
+    {
+      "transaction_id": "48ca7651-92f5-4f7b-8323-d342df6a8f93",
+      "kind": "retry_failed",
+      "amount_inr": 3906.55,
+      "failure_code": "network_error",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (268.2h since last failure).",
+      "action_detail": "Mock payment pay_mock_AF75BFD803 failed (network_error: Network error while contacting the acquirer.)"
+    },
+    {
+      "transaction_id": "a8addf36-ddf2-45eb-a8a3-f341c8819065",
+      "kind": "awaiting_customer",
+      "amount_inr": 360.9,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (3/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 360.90 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 360.90 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "ea74bb18-de3b-496f-ac45-96f6c012a0ff",
+      "kind": "deferred_backoff",
+      "amount_inr": 889.59,
+      "failure_code": "bank_timeout",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 3/3, but the minimum backoff is 72 hours since the last failure and only 64.7 hours have passed. Deferring the retry; not calling the payment API this cycle.",
+      "action_detail": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 3/3, but the minimum backoff is 72 hours since the last failure and only 64.7 hours have passed. Deferring the retry; not calling the payment API this cycle."
+    },
+    {
+      "transaction_id": "a6eab79e-d21c-42f8-8ada-4f80a9e782d4",
+      "kind": "awaiting_customer",
+      "amount_inr": 617.79,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 617.79 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 617.79 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "5cd8fe1a-dafe-48a9-bc71-e0bef3579560",
+      "kind": "retry_failed",
+      "amount_inr": 4762.72,
+      "failure_code": "network_error",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 1/3 after the 2h backoff elapsed (40.6h since last failure).",
+      "action_detail": "Mock payment pay_mock_AD0B5FEE2A failed (network_error: Network error while contacting the acquirer.)"
+    },
+    {
+      "transaction_id": "716fda0a-45a8-4829-94e2-86e5ac8936bc",
+      "kind": "awaiting_customer",
+      "amount_inr": 4397.38,
+      "failure_code": "card_declined",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (2/3) has not been hit.",
+      "action_detail": "[nudge en] We could not complete your payment of INR 4397.38. Please retry with an updated payment method if this continues. | [nudge hinglish] Aapka INR 4397.38 ka payment complete nahi ho paya. Kripya updated payment method se retry karein."
+    },
+    {
+      "transaction_id": "b65feea9-7d82-4264-9ba3-62e7afa415e5",
+      "kind": "awaiting_customer",
+      "amount_inr": 4524.96,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (2/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 4524.96 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 4524.96 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "9be71737-06b8-4231-8e86-7f3ca487eeab",
+      "kind": "awaiting_customer",
+      "amount_inr": 2668.54,
+      "failure_code": "card_declined",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (2/3) has not been hit.",
+      "action_detail": "[nudge en] We could not complete your payment of INR 2668.54. Please retry with an updated payment method if this continues. | [nudge hinglish] Aapka INR 2668.54 ka payment complete nahi ho paya. Kripya updated payment method se retry karein."
+    },
+    {
+      "transaction_id": "b24cc64f-be3e-4e57-b30a-9e32aba4fc03",
+      "kind": "awaiting_customer",
+      "amount_inr": 919.73,
+      "failure_code": "expired_mandate",
+      "predicted_root_cause": "MANDATE_EXPIRED",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "[nudge en] Your e-mandate for INR 919.73 has expired. Please re-authorize the mandate so we can collect the payment. | [nudge hinglish] Aapka e-mandate (INR 919.73) expire ho chuka hai. Kripya naya mandate authorize karein taaki payment complete ho sake."
+    },
+    {
+      "transaction_id": "a5135ea0-fa53-434d-a6d5-901d8b621d41",
+      "kind": "retry_failed",
+      "amount_inr": 491.11,
+      "failure_code": "network_error",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 1/3 after the 2h backoff elapsed (309.7h since last failure).",
+      "action_detail": "Mock payment pay_mock_B8F7D5CEE2 failed (network_error: Network error while contacting the acquirer.)"
+    },
+    {
+      "transaction_id": "8a4b8f7c-2147-4a15-bcce-96f6250a4578",
+      "kind": "retry_failed",
+      "amount_inr": 1235.53,
+      "failure_code": "network_error",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 3/3 after the 72h backoff elapsed (227.8h since last failure).",
+      "action_detail": "Mock payment pay_mock_80D062328A failed (network_error: Network error while contacting the acquirer.)"
+    },
+    {
+      "transaction_id": "618ae305-95a5-4afa-831d-029fac1e86d8",
+      "kind": "awaiting_customer",
+      "amount_inr": 3101.46,
+      "failure_code": "card_declined",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "[nudge en] We could not complete your payment of INR 3101.46. Please retry with an updated payment method if this continues. | [nudge hinglish] Aapka INR 3101.46 ka payment complete nahi ho paya. Kripya updated payment method se retry karein."
+    },
+    {
+      "transaction_id": "9918ee46-1497-4658-b010-f7197e695d0d",
+      "kind": "awaiting_customer",
+      "amount_inr": 397.18,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (1/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 397.18 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 397.18 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "9c07a751-1437-4509-acd1-586a2b840c67",
+      "kind": "escalated",
+      "amount_inr": 382.01,
+      "failure_code": "network_error",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "ESCALATE_HUMAN",
+      "reason": "Retry cap reached: this transaction already has 3 attempts (max 3). Forcing ESCALATE_HUMAN; no further retries. Classifier had recommended RETRY_IMMEDIATE.",
+      "action_detail": "Queued for human review; auto-retry disabled for this payment."
+    },
+    {
+      "transaction_id": "70944bdb-26a5-44e3-90ee-7a92a09151e0",
+      "kind": "unrecoverable",
+      "amount_inr": 1135.58,
+      "failure_code": "invalid_vpa",
+      "predicted_root_cause": "PERMANENT_FAILURE",
+      "final_action_taken": "NO_ACTION_UNRECOVERABLE",
+      "reason": "No safety override. Using the classifier's recommendation NO_ACTION_UNRECOVERABLE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "Marked unrecoverable; skipping automated retry and nudge."
+    },
+    {
+      "transaction_id": "670acc5c-b321-4f21-8dd8-eb85b04d3376",
+      "kind": "awaiting_customer",
+      "amount_inr": 3218.67,
+      "failure_code": "expired_mandate",
+      "predicted_root_cause": "MANDATE_EXPIRED",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "[nudge en] Your e-mandate for INR 3218.67 has expired. Please re-authorize the mandate so we can collect the payment. | [nudge hinglish] Aapka e-mandate (INR 3218.67) expire ho chuka hai. Kripya naya mandate authorize karein taaki payment complete ho sake."
+    },
+    {
+      "transaction_id": "d32e6dcd-83bc-4478-9d6a-c7b86778043b",
+      "kind": "awaiting_customer",
+      "amount_inr": 894.88,
+      "failure_code": "card_declined",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "[nudge en] We could not complete your payment of INR 894.88. Please retry with an updated payment method if this continues. | [nudge hinglish] Aapka INR 894.88 ka payment complete nahi ho paya. Kripya updated payment method se retry karein."
+    },
+    {
+      "transaction_id": "03edd1f8-74f9-4d17-a912-b4bf86a4bae4",
+      "kind": "escalated",
+      "amount_inr": 14967.48,
+      "failure_code": "risk_decline",
+      "predicted_root_cause": "RISK_BLOCKED",
+      "final_action_taken": "ESCALATE_HUMAN",
+      "reason": "SAFETY OVERRIDE fired: raw failure_code is risk_decline, so this payment is forced to ESCALATE_HUMAN and must not be auto-retried, even though the classifier recommended ESCALATE_HUMAN.",
+      "action_detail": "Queued for human review; auto-retry disabled for this payment."
+    },
+    {
+      "transaction_id": "372f871a-45ee-432d-aa07-f2137129cec7",
+      "kind": "awaiting_customer",
+      "amount_inr": 2708.32,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (2/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 2708.32 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 2708.32 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "1a5165ca-3c7c-4d85-a5cf-0041d0a643fe",
+      "kind": "retry_failed",
+      "amount_inr": 412.43,
+      "failure_code": "bank_timeout",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 3/3 after the 72h backoff elapsed (304.7h since last failure).",
+      "action_detail": "Mock payment pay_mock_4AC70C3688 failed (bank_timeout: The bank did not respond in time.)"
+    },
+    {
+      "transaction_id": "76c5a0dc-7e7e-4419-a0c1-4035c5d95f51",
+      "kind": "awaiting_customer",
+      "amount_inr": 2309.89,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (1/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 2309.89 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 2309.89 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "50032b35-1857-4baf-bac7-e2b96a7e4c36",
+      "kind": "awaiting_customer",
+      "amount_inr": 4681.99,
+      "failure_code": "expired_mandate",
+      "predicted_root_cause": "MANDATE_EXPIRED",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "[nudge en] Your e-mandate for INR 4681.99 has expired. Please re-authorize the mandate so we can collect the payment. | [nudge hinglish] Aapka e-mandate (INR 4681.99) expire ho chuka hai. Kripya naya mandate authorize karein taaki payment complete ho sake."
+    },
+    {
+      "transaction_id": "2812859a-1337-439e-8d4f-5d272c7f0b79",
+      "kind": "unrecoverable",
+      "amount_inr": 923.81,
+      "failure_code": "card_declined",
+      "predicted_root_cause": "PERMANENT_FAILURE",
+      "final_action_taken": "NO_ACTION_UNRECOVERABLE",
+      "reason": "No safety override. Using the classifier's recommendation NO_ACTION_UNRECOVERABLE because this is not a risk_decline and the retry cap (3/3) has not been hit.",
+      "action_detail": "Marked unrecoverable; skipping automated retry and nudge."
+    },
+    {
+      "transaction_id": "3a3c8a71-ff57-4e2b-8991-ab9bebc2026f",
+      "kind": "awaiting_customer",
+      "amount_inr": 616.67,
+      "failure_code": "expired_mandate",
+      "predicted_root_cause": "MANDATE_EXPIRED",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (2/3) has not been hit.",
+      "action_detail": "[nudge en] Your e-mandate for INR 616.67 has expired. Please re-authorize the mandate so we can collect the payment. | [nudge hinglish] Aapka e-mandate (INR 616.67) expire ho chuka hai. Kripya naya mandate authorize karein taaki payment complete ho sake."
+    },
+    {
+      "transaction_id": "5aaab32f-ce63-42b6-ab05-347fd556b37d",
+      "kind": "awaiting_customer",
+      "amount_inr": 3720.49,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (0/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 3720.49 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 3720.49 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "46a02a9b-65ec-4acd-8f80-35f55bd20c98",
+      "kind": "awaiting_customer",
+      "amount_inr": 2121.4,
+      "failure_code": "network_error",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (3/3) has not been hit.",
+      "action_detail": "[nudge en] We could not complete your payment of INR 2121.40. Please retry with an updated payment method if this continues. | [nudge hinglish] Aapka INR 2121.40 ka payment complete nahi ho paya. Kripya updated payment method se retry karein."
+    },
+    {
+      "transaction_id": "78b2b549-3bdb-409e-acc2-16a01bbc91f7",
+      "kind": "retry_failed",
+      "amount_inr": 1611.4,
+      "failure_code": "network_error",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (99.7h since last failure).",
+      "action_detail": "Mock payment pay_mock_F63D4DEC3B failed (network_error: Network error while contacting the acquirer.)"
+    },
+    {
+      "transaction_id": "30cbd755-6232-417a-a507-41818d1fb540",
+      "kind": "retry_failed",
+      "amount_inr": 9811.07,
+      "failure_code": "bank_timeout",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (172.9h since last failure).",
+      "action_detail": "Mock payment pay_mock_0A2E035653 failed (bank_timeout: The bank did not respond in time.)"
+    },
+    {
+      "transaction_id": "bf0d073d-821c-4336-9970-cf60ebff8d15",
+      "kind": "awaiting_customer",
+      "amount_inr": 672.62,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (2/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 672.62 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 672.62 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "668409e3-f1f8-443e-a99f-131849c8a43f",
+      "kind": "awaiting_customer",
+      "amount_inr": 5436.44,
+      "failure_code": "insufficient_funds",
+      "predicted_root_cause": "CUSTOMER_FUNDS_ISSUE",
+      "final_action_taken": "SEND_NUDGE",
+      "reason": "No safety override. Using the classifier's recommendation SEND_NUDGE because this is not a risk_decline and the retry cap (2/3) has not been hit.",
+      "action_detail": "[nudge en] Your payment of INR 5436.44 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 5436.44 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
+    },
+    {
+      "transaction_id": "31a3ac4d-828c-47e7-87d5-b7be1d30d990",
+      "kind": "escalated",
+      "amount_inr": 1824.87,
+      "failure_code": "risk_decline",
+      "predicted_root_cause": "RISK_BLOCKED",
+      "final_action_taken": "ESCALATE_HUMAN",
+      "reason": "SAFETY OVERRIDE fired: raw failure_code is risk_decline, so this payment is forced to ESCALATE_HUMAN and must not be auto-retried, even though the classifier recommended ESCALATE_HUMAN.",
+      "action_detail": "Queued for human review; auto-retry disabled for this payment."
+    }
+  ],
+  "audit_path": "D:\\Razorpay\\revenue-recovery-agent\\audit\\audit_log.jsonl",
+  "report_path": "D:\\Razorpay\\revenue-recovery-agent\\audit\\final_report.json"
+}
