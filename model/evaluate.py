@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from train_classifier import MODEL_PATH, load_bundle  # noqa: E402
 from intervention_map import recommend_action  # noqa: E402
+from predict import CONFIDENCE_THRESHOLD, predict_proba_full  # noqa: E402
 
 HOLDOUT_PATH = ROOT / "data" / "raw" / "holdout_set.csv"
 TARGET = "true_root_cause_category"
@@ -105,6 +106,40 @@ def main() -> None:
         "(predicted PERMANENT_FAILURE but true class was recoverable): "
         f"INR {float(holdout.loc[gave_up, 'amount'].sum()):,.2f}"
     )
+
+    # ── Full probability breakdown (confidence scores) ─────────────────────────
+    print("\n=== Full probability breakdown (predict_proba) ===")
+    print(f"CONFIDENCE_THRESHOLD = {CONFIDENCE_THRESHOLD}")
+    _, top_confs, proba_dicts = predict_proba_full(holdout)
+    below_gate = int((top_confs < CONFIDENCE_THRESHOLD).sum())
+    print(
+        f"Rows with top-class confidence < {CONFIDENCE_THRESHOLD}: "
+        f"{below_gate} / {len(holdout)} "
+        f"({100.0 * below_gate / max(len(holdout), 1):.1f}%) "
+        f"— would be escalated by the confidence gate"
+    )
+
+    print("\nConfidence distribution (top-class probability) by predicted class:")
+    conf_df = pd.DataFrame({
+        "predicted_root_cause": y_pred.values,
+        "confidence": top_confs.values,
+    })
+    conf_summary = (
+        conf_df.groupby("predicted_root_cause")["confidence"]
+        .agg(["count", "mean", "min", "max"])
+        .rename(columns={"count": "n", "mean": "avg_conf", "min": "min_conf", "max": "max_conf"})
+        .round(4)
+    )
+    print(conf_summary.to_string())
+
+    print("\nSample full probability rows (first 5 holdout rows):")
+    for i in range(min(5, len(holdout))):
+        pd_row = proba_dicts[i]
+        breakdown = "  |  ".join(
+            f"{cls} {p * 100:.1f}%"
+            for cls, p in sorted(pd_row.items(), key=lambda kv: -kv[1])
+        )
+        print(f"  [{i}] {breakdown}")
 
 
 if __name__ == "__main__":

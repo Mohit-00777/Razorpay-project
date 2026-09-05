@@ -25,6 +25,7 @@ from retry_mandate import retry_mandate  # noqa: E402
 from retry_payment import retry_payment  # noqa: E402
 from send_nudge import send_nudge  # noqa: E402
 from train_classifier import load_bundle  # noqa: E402
+from predict import predict_one_full  # noqa: E402
 
 HOLDOUT_PATH = ROOT / "data" / "raw" / "holdout_set.csv"
 TARGET = "true_root_cause_category"
@@ -91,30 +92,75 @@ def predict_batch(holdout: pd.DataFrame) -> pd.Series:
 
 
 def predict_one(row: dict[str, Any]) -> tuple[str, float]:
-    frame = pd.DataFrame([row])
-    labels, confidence = predict_with_confidence(frame)
-    return str(labels.iloc[0]), float(confidence.iloc[0])
+    """Legacy helper used by process_transaction_id. Returns (label, confidence)."""
+    label, conf, _ = predict_one_full(row)
+    return label, conf
 
 
-def process_transaction(row: dict[str, Any]) -> dict[str, Any]:
+def process_transaction(
+    row: dict[str, Any],
+    *,
+    dry_run: bool = False,
+) -> dict[str, Any]:
+    """Classify one transaction, apply policies, execute action, and log.
+
+    Parameters
+    ----------
+    row : dict
+        Raw payment-failure row dict.
+    dry_run : bool
+        When True the pipeline runs classification → confidence check → policy
+        decision, but does NOT call any action function and does NOT write to
+        audit_log.jsonl.  The returned dict has ``dry_run: True`` so callers
+        can clearly distinguish simulation results from live ones.
+    """
     row = {key: _as_python(value) for key, value in dict(row).items()}
     predicted = row.get("predicted_root_cause")
     confidence = row.get("classifier_confidence")
+    proba_breakdown: dict[str, float] = row.get("proba_breakdown") or {}
+
     if predicted is None or predicted == "" or confidence is None:
-        predicted, confidence = predict_one(row)
+        predicted, confidence, proba_breakdown = predict_one_full(row)
+
     predicted = str(predicted)
     confidence = float(confidence)
     model_action = recommend_action(predicted)
+    # Pass confidence into decide() so the confidence gate can read it.
+    row["classifier_confidence"] = confidence
     decision = decide(row, model_action)
     # Stash prediction so mandate routing can see it.
     row["predicted_root_cause"] = predicted
+
+    if dry_run:
+        # Simulation path: no external calls, no audit write.
+        return {
+            "transaction_id": str(row.get("transaction_id") or "manual"),
+            "dry_run": True,
+            "simulation_only": True,
+            "predicted_root_cause": predicted,
+            "classifier_confidence": round(confidence, 4),
+            "proba_breakdown": proba_breakdown,
+            "model_recommended_action": model_action,
+            "override_fired": decision.override_fired,
+            "low_confidence_override_fired": decision.low_confidence_override_fired,
+            "final_action_taken": decision.final_action,
+            "policy_reason": decision.policy_reason,
+            "amount": float(row.get("amount") or 0),
+            "retry_attempt_number": int(decision.retry_attempt_number),
+            "failure_code": row.get("failure_code"),
+            "execute_retry": bool(decision.execute_retry),
+            "retry_cap": MAX_RETRY_ATTEMPTS,
+        }
+
     result = execute_action(row, decision)
     record = {
         "transaction_id": str(row.get("transaction_id") or ""),
         "predicted_root_cause": predicted,
         "classifier_confidence": round(confidence, 4),
+        "proba_breakdown": proba_breakdown,
         "model_recommended_action": model_action,
         "override_fired": decision.override_fired,
+        "low_confidence_override_fired": decision.low_confidence_override_fired,
         "final_action_taken": decision.final_action,
         "policy_reason": decision.policy_reason,
         "action_result": result,
@@ -141,9 +187,10 @@ def load_holdout_row(transaction_id: str) -> dict[str, Any]:
 def process_transaction_id(transaction_id: str) -> dict[str, Any]:
     """Classify and act on one holdout row; append to the audit log (no reset)."""
     row = load_holdout_row(transaction_id)
-    predicted, confidence = predict_one(row)
+    predicted, confidence, proba_breakdown = predict_one_full(row)
     row["predicted_root_cause"] = predicted
     row["classifier_confidence"] = confidence
+    row["proba_breakdown"] = proba_breakdown
     return process_transaction(row)
 
 

@@ -1,16 +1,16 @@
 {
-  "audit_events": 64,
+  "audit_events": 60,
   "total_transactions_processed": 60,
-  "transactions_recovered": 7,
-  "transactions_not_recovered": 53,
+  "transactions_recovered": 5,
+  "transactions_not_recovered": 55,
   "total_amount_at_risk_inr": 164842.17,
-  "total_amount_recovered_inr": 11559.42,
-  "recovery_rate_pct": 7.01,
+  "total_amount_recovered_inr": 5961.72,
+  "recovery_rate_pct": 3.62,
   "actions_taken": {
     "SEND_NUDGE": 31,
-    "NO_ACTION_UNRECOVERABLE": 4,
-    "RETRY_IMMEDIATE": 21,
-    "ESCALATE_HUMAN": 4
+    "NO_ACTION_UNRECOVERABLE": 3,
+    "RETRY_IMMEDIATE": 20,
+    "ESCALATE_HUMAN": 6
   },
   "actions_with_recovery": {
     "SEND_NUDGE": {
@@ -18,20 +18,20 @@
       "recovered_inr": 0.0
     },
     "NO_ACTION_UNRECOVERABLE": {
-      "count": 4,
+      "count": 3,
       "recovered_inr": 0.0
     },
     "RETRY_IMMEDIATE": {
-      "count": 21,
-      "recovered_inr": 11559.420000000002
+      "count": 20,
+      "recovered_inr": 5961.72
     },
     "ESCALATE_HUMAN": {
-      "count": 4,
+      "count": 6,
       "recovered_inr": 0.0
     }
   },
-  "wasted_retry_cost_inr": 60.0,
-  "wasted_retry_attempts": 12,
+  "wasted_retry_cost_inr": 55.0,
+  "wasted_retry_attempts": 11,
   "retry_gateway_fee_per_attempt_inr": 5.0,
   "false_positive_cost": {
     "available": true,
@@ -53,13 +53,17 @@
       "46a02a9b-65ec-4acd-8f80-35f55bd20c98"
     ]
   },
-  "unresolved_or_escalated_count": 53,
+  "risk_decline_override_count": 3,
+  "retry_cap_override_count": 1,
+  "low_confidence_override_fired_count": 2,
+  "normal_path_count": 54,
+  "unresolved_or_escalated_count": 55,
   "unresolved_kind_breakdown": {
     "awaiting_customer": 31,
-    "unrecoverable": 4,
-    "retry_failed": 12,
-    "deferred_backoff": 2,
-    "escalated": 4
+    "unrecoverable": 3,
+    "deferred_backoff": 4,
+    "retry_failed": 11,
+    "escalated": 6
   },
   "unresolved_or_escalated": [
     {
@@ -153,6 +157,16 @@
       "action_detail": "[nudge en] Your payment of INR 1306.87 could not go through due to insufficient balance. Please add funds and retry from the same link. | [nudge hinglish] Aapka INR 1306.87 ka payment balance kam hone ki wajah se fail ho gaya. Kripya account mein paise add karke dubara try karein."
     },
     {
+      "transaction_id": "b18753e6-d457-4ad9-a867-a096edd877c8",
+      "kind": "deferred_backoff",
+      "amount_inr": 1520.59,
+      "failure_code": "bank_timeout",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 2/3, but the minimum backoff is 24 hours since the last failure and only 5.3 hours have passed. Deferring the retry; not calling the payment API this cycle.",
+      "action_detail": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 2/3, but the minimum backoff is 24 hours since the last failure and only 5.3 hours have passed. Deferring the retry; not calling the payment API this cycle."
+    },
+    {
       "transaction_id": "085b15fb-4a8f-4810-b84c-2f29980402a2",
       "kind": "unrecoverable",
       "amount_inr": 772.39,
@@ -169,8 +183,18 @@
       "failure_code": "network_error",
       "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
       "final_action_taken": "RETRY_IMMEDIATE",
-      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (268.4h since last failure).",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (247.8h since last failure).",
       "action_detail": "Mock payment pay_mock_20050BF965 failed (network_error: Network error while contacting the acquirer.)"
+    },
+    {
+      "transaction_id": "f758dce2-0556-4aea-a7b0-32831d7c0098",
+      "kind": "deferred_backoff",
+      "amount_inr": 4077.11,
+      "failure_code": "bank_timeout",
+      "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
+      "final_action_taken": "RETRY_IMMEDIATE",
+      "reason": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 2/3, but the minimum backoff is 24 hours since the last failure and only 20.6 hours have passed. Deferring the retry; not calling the payment API this cycle.",
+      "action_detail": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 2/3, but the minimum backoff is 24 hours since the last failure and only 20.6 hours have passed. Deferring the retry; not calling the payment API this cycle."
     },
     {
       "transaction_id": "1777e8cb-7468-4b98-92fe-2fded918b3e5",
@@ -179,8 +203,8 @@
       "failure_code": "bank_timeout",
       "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
       "final_action_taken": "RETRY_IMMEDIATE",
-      "reason": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 3/3, but the minimum backoff is 72 hours since the last failure and only 68.7 hours have passed. Deferring the retry; not calling the payment API this cycle.",
-      "action_detail": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 3/3, but the minimum backoff is 72 hours since the last failure and only 68.7 hours have passed. Deferring the retry; not calling the payment API this cycle."
+      "reason": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 3/3, but the minimum backoff is 72 hours since the last failure and only 48.1 hours have passed. Deferring the retry; not calling the payment API this cycle.",
+      "action_detail": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 3/3, but the minimum backoff is 72 hours since the last failure and only 48.1 hours have passed. Deferring the retry; not calling the payment API this cycle."
     },
     {
       "transaction_id": "771ad655-cdfc-4ee0-a61e-de900267deb3",
@@ -199,7 +223,7 @@
       "failure_code": "network_error",
       "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
       "final_action_taken": "RETRY_IMMEDIATE",
-      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 1/3 after the 2h backoff elapsed (224.2h since last failure).",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 1/3 after the 2h backoff elapsed (203.6h since last failure).",
       "action_detail": "Mock payment pay_mock_A1AED955EB failed (network_error: Network error while contacting the acquirer.)"
     },
     {
@@ -209,7 +233,7 @@
       "failure_code": "network_error",
       "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
       "final_action_taken": "RETRY_IMMEDIATE",
-      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (263.1h since last failure).",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (242.5h since last failure).",
       "action_detail": "Mock payment pay_mock_0B95442EEE failed (network_error: Network error while contacting the acquirer.)"
     },
     {
@@ -219,7 +243,7 @@
       "failure_code": "bank_timeout",
       "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
       "final_action_taken": "RETRY_IMMEDIATE",
-      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 3/3 after the 72h backoff elapsed (263.6h since last failure).",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 3/3 after the 72h backoff elapsed (243.0h since last failure).",
       "action_detail": "Mock payment pay_mock_7C14E40EA6 failed (bank_timeout: The bank did not respond in time.)"
     },
     {
@@ -259,7 +283,7 @@
       "failure_code": "network_error",
       "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
       "final_action_taken": "RETRY_IMMEDIATE",
-      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 3/3 after the 72h backoff elapsed (298.6h since last failure).",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 3/3 after the 72h backoff elapsed (277.9h since last failure).",
       "action_detail": "Mock payment pay_mock_3B0F486EC0 failed (network_error: Network error while contacting the acquirer.)"
     },
     {
@@ -289,7 +313,7 @@
       "failure_code": "network_error",
       "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
       "final_action_taken": "RETRY_IMMEDIATE",
-      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (268.2h since last failure).",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (247.6h since last failure).",
       "action_detail": "Mock payment pay_mock_AF75BFD803 failed (network_error: Network error while contacting the acquirer.)"
     },
     {
@@ -309,8 +333,8 @@
       "failure_code": "bank_timeout",
       "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
       "final_action_taken": "RETRY_IMMEDIATE",
-      "reason": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 3/3, but the minimum backoff is 72 hours since the last failure and only 64.7 hours have passed. Deferring the retry; not calling the payment API this cycle.",
-      "action_detail": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 3/3, but the minimum backoff is 72 hours since the last failure and only 64.7 hours have passed. Deferring the retry; not calling the payment API this cycle."
+      "reason": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 3/3, but the minimum backoff is 72 hours since the last failure and only 44.1 hours have passed. Deferring the retry; not calling the payment API this cycle.",
+      "action_detail": "Classifier recommended RETRY_IMMEDIATE. Cap allows attempt 3/3, but the minimum backoff is 72 hours since the last failure and only 44.1 hours have passed. Deferring the retry; not calling the payment API this cycle."
     },
     {
       "transaction_id": "a6eab79e-d21c-42f8-8ada-4f80a9e782d4",
@@ -324,13 +348,13 @@
     },
     {
       "transaction_id": "5cd8fe1a-dafe-48a9-bc71-e0bef3579560",
-      "kind": "retry_failed",
+      "kind": "escalated",
       "amount_inr": 4762.72,
       "failure_code": "network_error",
       "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
-      "final_action_taken": "RETRY_IMMEDIATE",
-      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 1/3 after the 2h backoff elapsed (40.6h since last failure).",
-      "action_detail": "Mock payment pay_mock_AD0B5FEE2A failed (network_error: Network error while contacting the acquirer.)"
+      "final_action_taken": "ESCALATE_HUMAN",
+      "reason": "LOW CONFIDENCE OVERRIDE fired: classifier top-class probability 0.5028 is below threshold 0.55. Routing to human review instead of following the model's recommendation (RETRY_IMMEDIATE). Increase model training data or lower CONFIDENCE_THRESHOLD to reduce human escalation rate.",
+      "action_detail": "Queued for human review; auto-retry disabled for this payment."
     },
     {
       "transaction_id": "716fda0a-45a8-4829-94e2-86e5ac8936bc",
@@ -379,7 +403,7 @@
       "failure_code": "network_error",
       "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
       "final_action_taken": "RETRY_IMMEDIATE",
-      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 1/3 after the 2h backoff elapsed (309.7h since last failure).",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 1/3 after the 2h backoff elapsed (289.1h since last failure).",
       "action_detail": "Mock payment pay_mock_B8F7D5CEE2 failed (network_error: Network error while contacting the acquirer.)"
     },
     {
@@ -389,7 +413,7 @@
       "failure_code": "network_error",
       "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
       "final_action_taken": "RETRY_IMMEDIATE",
-      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 3/3 after the 72h backoff elapsed (227.8h since last failure).",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 3/3 after the 72h backoff elapsed (207.2h since last failure).",
       "action_detail": "Mock payment pay_mock_80D062328A failed (network_error: Network error while contacting the acquirer.)"
     },
     {
@@ -479,7 +503,7 @@
       "failure_code": "bank_timeout",
       "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
       "final_action_taken": "RETRY_IMMEDIATE",
-      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 3/3 after the 72h backoff elapsed (304.7h since last failure).",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 3/3 after the 72h backoff elapsed (284.1h since last failure).",
       "action_detail": "Mock payment pay_mock_4AC70C3688 failed (bank_timeout: The bank did not respond in time.)"
     },
     {
@@ -504,13 +528,13 @@
     },
     {
       "transaction_id": "2812859a-1337-439e-8d4f-5d272c7f0b79",
-      "kind": "unrecoverable",
+      "kind": "escalated",
       "amount_inr": 923.81,
       "failure_code": "card_declined",
       "predicted_root_cause": "PERMANENT_FAILURE",
-      "final_action_taken": "NO_ACTION_UNRECOVERABLE",
-      "reason": "No safety override. Using the classifier's recommendation NO_ACTION_UNRECOVERABLE because this is not a risk_decline and the retry cap (3/3) has not been hit.",
-      "action_detail": "Marked unrecoverable; skipping automated retry and nudge."
+      "final_action_taken": "ESCALATE_HUMAN",
+      "reason": "LOW CONFIDENCE OVERRIDE fired: classifier top-class probability 0.4307 is below threshold 0.55. Routing to human review instead of following the model's recommendation (NO_ACTION_UNRECOVERABLE). Increase model training data or lower CONFIDENCE_THRESHOLD to reduce human escalation rate.",
+      "action_detail": "Queued for human review; auto-retry disabled for this payment."
     },
     {
       "transaction_id": "3a3c8a71-ff57-4e2b-8991-ab9bebc2026f",
@@ -549,7 +573,7 @@
       "failure_code": "network_error",
       "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
       "final_action_taken": "RETRY_IMMEDIATE",
-      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (99.7h since last failure).",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (79.0h since last failure).",
       "action_detail": "Mock payment pay_mock_F63D4DEC3B failed (network_error: Network error while contacting the acquirer.)"
     },
     {
@@ -559,7 +583,7 @@
       "failure_code": "bank_timeout",
       "predicted_root_cause": "TEMPORARY_BANK_ISSUE",
       "final_action_taken": "RETRY_IMMEDIATE",
-      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (172.9h since last failure).",
+      "reason": "No safety override. Using the classifier's recommendation RETRY_IMMEDIATE. Executing retry attempt 2/3 after the 24h backoff elapsed (152.3h since last failure).",
       "action_detail": "Mock payment pay_mock_0A2E035653 failed (bank_timeout: The bank did not respond in time.)"
     },
     {

@@ -21,32 +21,35 @@
       --muted:  #8a97ac;
       --faint:  #4e5d72;
 
-      --accent:      #56e0b0;      /* recovered / good */
+      --accent:      #56e0b0;
       --accent-dim:  rgba(86,224,176,0.12);
       --accent-ring: rgba(86,224,176,0.25);
 
-      --warn:      #f6c642;        /* open / at-risk */
+      --warn:      #f6c642;
       --warn-dim:  rgba(246,198,66,0.12);
 
-      --danger:      #ff637a;      /* escalated / failed */
+      --danger:      #ff637a;
       --danger-dim:  rgba(255,99,122,0.12);
       --danger-ring: rgba(255,99,122,0.25);
 
-      --info:       #6db4ff;       /* classifier */
+      --info:       #6db4ff;
       --info-dim:   rgba(109,180,255,0.12);
 
-      --violet:     #b39dfd;       /* policy */
+      --violet:     #b39dfd;
       --violet-dim: rgba(179,157,253,0.12);
+
+      --sim:        #f6a742;
+      --sim-dim:    rgba(246,167,66,0.15);
+      --sim-ring:   rgba(246,167,66,0.35);
+
+      --nudge:      #a78bfa;
+      --nudge-dim:  rgba(167,139,250,0.12);
 
       --shadow-card: 0 20px 60px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3);
       --radius: 20px;
       --radius-sm: 12px;
       --mono: "IBM Plex Mono", "Cascadia Code", ui-monospace, monospace;
       --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-
-      /* Glow tracks */
-      --track-recovered: linear-gradient(90deg, transparent 0%, rgba(86,224,176,0.06) 50%, transparent 100%);
-      --track-escalated: linear-gradient(90deg, transparent 0%, rgba(255,99,122,0.06) 50%, transparent 100%);
     }
 
     /* ─── Reset & base ─── */
@@ -65,330 +68,325 @@
     }
 
     /* ─── Shell ─── */
-    .shell {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 30px 24px 56px;
-    }
+    .shell { max-width: 1080px; margin: 0 auto; padding: 30px 24px 56px; }
 
     /* ─── Header ─── */
     header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 26px;
-      flex-wrap: wrap;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 18px; margin-bottom: 26px; flex-wrap: wrap;
     }
     .brand { flex: 1 1 280px; }
-    .brand h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: -0.04em;
-      line-height: 1.2;
-    }
+    .brand h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1.2; }
     .brand h1 span { color: var(--accent); }
-    .brand p {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 0.88rem;
-      letter-spacing: 0.01em;
-    }
+    .brand p { margin-top: 6px; color: var(--muted); font-size: 0.88rem; letter-spacing: 0.01em; }
 
     /* ─── WS connection pill ─── */
     .conn-pill {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      border: 1px solid var(--line-strong);
-      border-radius: 999px;
-      background: var(--bg-elevated);
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      color: var(--muted);
-      transition: border-color 0.3s, color 0.3s;
-      white-space: nowrap;
+      display: flex; align-items: center; gap: 8px; padding: 8px 14px;
+      border: 1px solid var(--line-strong); border-radius: 999px;
+      background: var(--bg-elevated); font-family: var(--mono);
+      font-size: 0.75rem; color: var(--muted);
+      transition: border-color 0.3s, color 0.3s; white-space: nowrap;
     }
-    .conn-pill.live  { border-color: var(--accent-ring); color: var(--accent); }
-    .conn-pill.dead  { border-color: var(--danger-ring); color: var(--danger); }
-    .conn-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--faint);
-      flex-shrink: 0;
-    }
-    .conn-pill.live  .conn-dot {
-      background: var(--accent);
-      animation: pulse-dot 1.8s ease-out infinite;
-    }
-    .conn-pill.dead  .conn-dot { background: var(--danger); }
+    .conn-pill.live { border-color: var(--accent-ring); color: var(--accent); }
+    .conn-pill.dead { border-color: var(--danger-ring); color: var(--danger); }
+    .conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); flex-shrink: 0; }
+    .conn-pill.live .conn-dot { background: var(--accent); animation: pulse-dot 1.8s ease-out infinite; }
+    .conn-pill.dead .conn-dot { background: var(--danger); }
     @keyframes pulse-dot {
-      0%   { box-shadow: 0 0 0 0    var(--accent-ring); }
-      60%  { box-shadow: 0 0 0 6px  transparent; }
-      100% { box-shadow: 0 0 0 0    transparent; }
+      0%  { box-shadow: 0 0 0 0   var(--accent-ring); }
+      60% { box-shadow: 0 0 0 6px transparent; }
+      100%{ box-shadow: 0 0 0 0   transparent; }
     }
 
     /* ─── Stats row ─── */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 22px;
-    }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 22px; }
     .stat {
-      background: var(--bg-elevated);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-sm);
-      padding: 16px 18px;
-      transition: border-color 0.25s;
+      background: var(--bg-elevated); border: 1px solid var(--line);
+      border-radius: var(--radius-sm); padding: 16px 18px; transition: border-color 0.25s;
     }
     .stat:hover { border-color: var(--line-strong); }
-    .stat .label {
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--faint);
-    }
-    .stat .value {
-      margin-top: 8px;
-      font-family: var(--mono);
-      font-size: 1.4rem;
-      font-weight: 600;
-      letter-spacing: -0.04em;
-      transition: color 0.4s;
-    }
-    .stat .sub {
-      margin-top: 3px;
-      font-size: 0.72rem;
-      color: var(--faint);
-      font-family: var(--mono);
-    }
+    .stat .label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+    .stat .value { margin-top: 8px; font-family: var(--mono); font-size: 1.4rem; font-weight: 600; letter-spacing: -0.04em; transition: color 0.4s; }
+    .stat .sub   { margin-top: 3px; font-size: 0.72rem; color: var(--faint); font-family: var(--mono); }
     #statN    { color: var(--text); }
     #statRisk { color: var(--warn); }
     #statRec  { color: var(--accent); }
     #statRate { color: var(--info); }
-
-    /* Rate colour shifts */
     #statRate.rate-good   { color: var(--accent); }
     #statRate.rate-warn   { color: var(--warn); }
     #statRate.rate-danger { color: var(--danger); }
 
+    /* ─── Manual Entry Panel ─── */
+    .manual-panel {
+      background: var(--bg-elevated); border: 1px solid var(--line-strong);
+      border-radius: var(--radius); padding: 22px 24px; margin-bottom: 22px;
+    }
+    .manual-panel h2 {
+      font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--info); margin-bottom: 16px;
+    }
+    .manual-form { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .form-group input,
+    .form-group select {
+      background: var(--bg-card); border: 1px solid var(--line-strong); border-radius: 8px;
+      color: var(--text); font-family: var(--mono); font-size: 0.85rem;
+      padding: 8px 10px; outline: none; transition: border-color 0.2s; width: 100%;
+    }
+    .form-group input:focus,
+    .form-group select:focus { border-color: var(--info); }
+    .form-group input::placeholder { color: var(--faint); }
+    .form-group select option { background: var(--bg-card); }
+
+    /* ─── Bank combobox ─── */
+    .bank-combo { position: relative; }
+    .bank-combo input {
+      background: var(--bg-card); border: 1px solid var(--line-strong); border-radius: 8px;
+      color: var(--text); font-family: var(--mono); font-size: 0.85rem;
+      padding: 8px 10px; outline: none; transition: border-color 0.2s; width: 100%;
+    }
+    .bank-combo input:focus { border-color: var(--info); }
+    .bank-combo input::placeholder { color: var(--faint); }
+    .bank-dropdown {
+      display: none;
+      position: absolute; z-index: 200; top: calc(100% + 4px); left: 0; right: 0;
+      background: var(--bg-card-h); border: 1px solid var(--line-strong);
+      border-radius: 8px; max-height: 220px; overflow-y: auto;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .bank-dropdown.open { display: block; }
+    .bank-option {
+      padding: 8px 12px; font-family: var(--mono); font-size: 0.82rem;
+      color: var(--text); cursor: pointer; transition: background 0.12s;
+    }
+    .bank-option:hover,
+    .bank-option.active { background: var(--info-dim); color: var(--info); }
+    .bank-option.no-match { color: var(--faint); cursor: default; }
+    .bank-option.no-match:hover { background: none; }
+
+    .form-footer { display: flex; align-items: center; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+    .dry-run-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; font-size: 0.82rem; color: var(--muted); }
+    .dry-run-toggle input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--sim); cursor: pointer; }
+    .dry-run-toggle.active { color: var(--sim); }
+
+    .btn-submit {
+      padding: 10px 22px; border-radius: 10px; border: none;
+      background: var(--info); color: #060b14; font-weight: 700;
+      font-size: 0.85rem; letter-spacing: 0.04em; cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-submit:hover  { opacity: 0.88; }
+    .btn-submit:active { transform: scale(0.97); }
+    .btn-submit.loading { opacity: 0.55; cursor: not-allowed; }
+    .btn-submit.dry { background: var(--sim); }
+
+    .manual-error {
+      display: none; margin-top: 10px; padding: 8px 12px; border-radius: 8px;
+      background: var(--danger-dim); border: 1px solid var(--danger-ring);
+      color: var(--danger); font-size: 0.82rem; font-family: var(--mono);
+    }
+
+    /* ─── Executive Report Panel ─── */
+    .report-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+    .btn-report {
+      padding: 10px 20px; border-radius: 10px; border: 1px solid var(--violet);
+      background: var(--violet-dim); color: var(--violet); font-weight: 600;
+      font-size: 0.82rem; letter-spacing: 0.04em; cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .btn-report:hover  { background: rgba(179,157,253,0.22); }
+    .btn-report.loading { opacity: 0.55; cursor: not-allowed; }
+
+    .report-panel {
+      display: none; background: var(--bg-elevated); border: 1px solid var(--line-strong);
+      border-radius: var(--radius); padding: 22px 24px; margin-bottom: 22px;
+    }
+    .report-panel.visible { display: block; }
+    .report-panel h2 { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--violet); margin-bottom: 16px; }
+    .report-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-bottom: 16px; }
+    .rstat { background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; }
+    .rstat .rl { font-size: 0.66rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--faint); }
+    .rstat .rv { margin-top: 6px; font-family: var(--mono); font-size: 1.2rem; font-weight: 600; color: var(--text); }
+    .rstat .rv.good   { color: var(--accent); }
+    .rstat .rv.warn   { color: var(--warn); }
+    .rstat .rv.bad    { color: var(--danger); }
+    .rstat .rv.info   { color: var(--info); }
+    .rstat .rv.violet { color: var(--violet); }
+
+    .report-section { margin-top: 16px; }
+    .report-section h3 { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+    .report-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; font-family: var(--mono); }
+    .report-table th { text-align: left; padding: 5px 8px; color: var(--faint); font-size: 0.7rem; border-bottom: 1px solid var(--line); }
+    .report-table td { padding: 5px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text); }
+    .report-table tr:last-child td { border-bottom: none; }
+
     /* ─── Feed ─── */
     .feed-wrap { position: relative; }
-    .feed {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+    .feed { display: flex; flex-direction: column; gap: 10px; }
 
     /* Empty state */
     .empty-state {
-      border: 1px dashed var(--line-strong);
-      border-radius: var(--radius);
-      padding: 52px 24px;
-      text-align: center;
-      background: rgba(255,255,255,0.012);
+      border: 1px dashed var(--line-strong); border-radius: var(--radius);
+      padding: 52px 24px; text-align: center; background: rgba(255,255,255,0.012);
     }
-    .empty-state .ei {
-      font-size: 2.4rem;
-      margin-bottom: 12px;
-      filter: grayscale(0.4);
-    }
-    .empty-state strong {
-      display: block;
-      font-size: 1.05rem;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
-    .empty-state p {
-      color: var(--muted);
-      font-size: 0.875rem;
-      max-width: 420px;
-      margin: 0 auto;
-    }
-    .empty-state code {
-      font-family: var(--mono);
-      font-size: 0.82rem;
-      color: var(--accent);
-      background: var(--accent-dim);
-      padding: 1px 5px;
-      border-radius: 4px;
-    }
+    .empty-state .ei { font-size: 2.4rem; margin-bottom: 12px; filter: grayscale(0.4); }
+    .empty-state strong { display: block; font-size: 1.05rem; color: var(--text); margin-bottom: 8px; }
+    .empty-state p { color: var(--muted); font-size: 0.875rem; max-width: 420px; margin: 0 auto; }
+    .empty-state code { font-family: var(--mono); font-size: 0.82rem; color: var(--accent); background: var(--accent-dim); padding: 1px 5px; border-radius: 4px; }
 
     /* ─── Transaction card ─── */
     .card {
       background: linear-gradient(160deg, var(--bg-card-h) 0%, var(--bg-card) 100%);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-card);
-      overflow: hidden;
-      animation: card-in 0.4s cubic-bezier(0.16,1,0.3,1) both;
+      border: 1px solid var(--line); border-radius: var(--radius-sm);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3); overflow: hidden;
+      animation: card-in 0.35s cubic-bezier(0.16,1,0.3,1) both;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
     @keyframes card-in {
-      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      from { opacity: 0; transform: translateY(12px) scale(0.985); }
       to   { opacity: 1; transform: none; }
     }
-
-    .card.recovered {
-      border-color: rgba(86,224,176,0.25);
-      background: linear-gradient(160deg, rgba(86,224,176,0.04) 0%, var(--bg-card) 60%);
-    }
-    .card.escalated {
-      border-color: rgba(255,99,122,0.25);
-      background: linear-gradient(160deg, rgba(255,99,122,0.04) 0%, var(--bg-card) 60%);
-    }
-    .card.replay {
-      animation: none;
-      opacity: 0.85;
-    }
+    .card.recovered { border-color: rgba(86,224,176,0.22); }
+    .card.escalated { border-color: rgba(255,99,122,0.22); }
+    .card.simulation{ border-color: var(--sim-ring); }
+    .card.replay    { animation: none; opacity: 0.82; }
     .card.replay:hover { opacity: 1; }
 
-    /* Card header */
-    .card-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 18px 20px 12px;
-      border-bottom: 1px solid var(--line);
-      flex-wrap: wrap;
+    /* ── Compact row (always visible) ─── */
+    .card-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 16px; cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
     }
-    .card-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .txn-id {
-      font-family: var(--mono);
-      font-size: 0.82rem;
-      color: var(--muted);
+    .card-row:hover { background: rgba(255,255,255,0.03); }
+
+    /* coloured status dot in the compact row */
+    .row-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
     }
+    .row-dot.ok   { background: var(--accent); box-shadow: 0 0 5px var(--accent-ring); }
+    .row-dot.bad  { background: var(--danger); box-shadow: 0 0 5px var(--danger-ring); }
+    .row-dot.warn { background: var(--warn);   box-shadow: 0 0 5px rgba(246,198,66,0.4); }
+    .row-dot.nudge{ background: var(--nudge);  box-shadow: 0 0 5px rgba(167,139,250,0.4); }
+    .row-dot.sim  { background: var(--sim);    box-shadow: 0 0 5px var(--sim-ring); }
+
+    .row-id {
+      font-family: var(--mono); font-size: 0.79rem; color: var(--muted);
+      flex: 1 1 0; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .row-amount {
+      font-family: var(--mono); font-size: 0.9rem; font-weight: 600;
+      color: var(--text); flex-shrink: 0;
+    }
+    .row-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    /* small status badge in the row */
+    .row-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px; border-radius: 999px;
+      font-size: 0.64rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .row-badge.ok    { background: var(--accent-dim);  color: var(--accent);  border: 1px solid var(--accent-ring); }
+    .row-badge.bad   { background: var(--danger-dim);  color: var(--danger);  border: 1px solid var(--danger-ring); }
+    .row-badge.warn  { background: var(--warn-dim);    color: var(--warn);    border: 1px solid rgba(246,198,66,0.3); }
+    .row-badge.nudge { background: var(--nudge-dim);   color: var(--nudge);   border: 1px solid rgba(167,139,250,0.3); }
+    .row-badge.sim   { background: var(--sim-dim);     color: var(--sim);     border: 1px solid var(--sim-ring); }
+
     .replay-badge {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--faint);
-      border: 1px solid var(--line-strong);
-      border-radius: 4px;
-      padding: 1px 5px;
+      font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--faint);
+      border: 1px solid var(--line-strong); border-radius: 4px; padding: 1px 5px;
     }
-    .card-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-    .amount {
-      font-family: var(--mono);
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text);
+    .sim-badge {
+      font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--sim);
+      border: 1px solid var(--sim-ring); border-radius: 4px; padding: 1px 6px;
+      background: var(--sim-dim);
     }
 
-    /* Status pill */
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+    /* chevron toggle */
+    .row-chevron {
+      font-size: 0.7rem; color: var(--faint); flex-shrink: 0;
+      transition: transform 0.22s cubic-bezier(0.4,0,0.2,1);
+      margin-left: 2px;
     }
-    .pill.ok   { background: var(--accent-dim);  color: var(--accent);  border: 1px solid var(--accent-ring); }
-    .pill.bad  { background: var(--danger-dim);  color: var(--danger);  border: 1px solid var(--danger-ring); }
-    .pill.warn { background: var(--warn-dim);    color: var(--warn);    border: 1px solid rgba(246,198,66,0.3); }
+    .card.open .row-chevron { transform: rotate(180deg); }
+
+    /* ── Detail panel (collapsed by default) ─── */
+    .card-detail {
+      border-top: 1px solid var(--line);
+      /* collapsed */
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .card.open .card-detail {
+      /* 600px is more than enough for any card detail */
+      max-height: 600px;
+    }
 
     /* ─── Steps ─── */
-    .steps { padding: 6px 12px 18px; }
+    .steps { padding: 6px 12px 12px; }
     .step {
-      display: grid;
-      grid-template-columns: 28px 1fr;
-      gap: 12px;
-      padding: 10px 8px;
-      border-radius: 8px;
-      opacity: 0;
-      transform: translateY(10px);
+      display: grid; grid-template-columns: 28px 1fr; gap: 12px;
+      padding: 10px 8px; border-radius: 8px;
+      opacity: 0; transform: translateY(10px);
       transition: opacity 0.4s ease, transform 0.4s ease, background 0.2s;
     }
     .step.show { opacity: 1; transform: none; }
     .step:hover { background: rgba(255,255,255,0.025); }
 
-    /* Rail dot */
-    .rail {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 5px;
-    }
-    .rail-dot {
-      width: 9px; height: 9px;
-      border-radius: 50%;
-      background: var(--faint);
-      flex-shrink: 0;
-    }
-    .rail-line {
-      width: 1px;
-      flex: 1;
-      background: var(--line);
-      margin-top: 4px;
-      min-height: 12px;
-    }
+    .rail { display: flex; flex-direction: column; align-items: center; padding-top: 5px; }
+    .rail-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--faint); flex-shrink: 0; }
+    .rail-line { width: 1px; flex: 1; background: var(--line); margin-top: 4px; min-height: 12px; }
     .step:last-child .rail-line { display: none; }
 
-    /* Step colours */
     .step.s0 .rail-dot { background: var(--warn);   box-shadow: 0 0 6px rgba(246,198,66,0.4); }
     .step.s1 .rail-dot { background: var(--info);   box-shadow: 0 0 6px rgba(109,180,255,0.4); }
     .step.s2 .rail-dot { background: var(--violet); box-shadow: 0 0 6px rgba(179,157,253,0.4); }
     .step.s3 .rail-dot { background: var(--accent); box-shadow: 0 0 6px rgba(86,224,176,0.4); }
     .step.s4 .rail-dot { background: var(--text); }
 
-    /* Step content */
     .step-body { min-width: 0; }
-    .step-label {
-      font-size: 0.66rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 3px;
-    }
+    .step-label { font-size: 0.66rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px; }
     .step.s0 .step-label { color: var(--warn); }
     .step.s1 .step-label { color: var(--info); }
     .step.s2 .step-label { color: var(--violet); }
     .step.s3 .step-label { color: var(--accent); }
     .step.s4 .step-label { color: var(--muted); }
 
-    .step-text {
-      font-size: 0.95rem;
-      line-height: 1.5;
-      color: var(--text);
-      word-break: break-word;
-    }
+    .step-text { font-size: 0.95rem; line-height: 1.5; color: var(--text); word-break: break-word; }
     .step-text em {
-      font-style: normal;
-      font-family: var(--mono);
-      font-size: 0.87em;
-      color: var(--text);
-      background: rgba(255,255,255,0.05);
-      padding: 1px 4px;
-      border-radius: 4px;
+      font-style: normal; font-family: var(--mono); font-size: 0.87em; color: var(--text);
+      background: rgba(255,255,255,0.05); padding: 1px 4px; border-radius: 4px;
     }
-    /* Highlight key numbers in result line */
-    .step.s4 .step-text em.amount-hi {
-      color: var(--accent);
-      background: var(--accent-dim);
-    }
-    .step.s4 .step-text em.stop-hi {
-      color: var(--danger);
-      background: var(--danger-dim);
-    }
+    .step.s4 .step-text em.amount-hi { color: var(--accent); background: var(--accent-dim); }
+    .step.s4 .step-text em.stop-hi   { color: var(--danger); background: var(--danger-dim); }
+
+    /* ─── Probability bar ─── */
+    .proba-wrap { padding: 0 20px 14px; display: flex; flex-direction: column; gap: 5px; }
+    .proba-label { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--faint); margin-bottom: 4px; }
+    .proba-row { display: grid; grid-template-columns: 220px 1fr 44px; align-items: center; gap: 8px; }
+    .proba-cls { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+    .proba-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; }
+    .proba-fill { height: 100%; border-radius: 99px; background: var(--info); transition: width 0.5s ease; }
+    .proba-fill.top { background: var(--accent); }
+    .proba-pct { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); text-align: right; }
 
     /* ─── Responsive ─── */
     @media (max-width: 800px) {
       .stats { grid-template-columns: 1fr 1fr; }
       header { flex-direction: column; align-items: flex-start; }
       .conn-pill { align-self: flex-start; }
-      .card-head { flex-direction: column; align-items: flex-start; }
+      .proba-row { grid-template-columns: 160px 1fr 40px; }
     }
     @media (max-width: 480px) {
       .stats { grid-template-columns: 1fr; }
       .step { grid-template-columns: 22px 1fr; }
+      .proba-row { grid-template-columns: 120px 1fr 36px; }
     }
   </style>
 </head>
@@ -430,6 +428,85 @@
       </div>
     </section>
 
+    <!-- ── Manual Transaction Entry ── -->
+    <section class="manual-panel" aria-label="Manual transaction entry">
+      <h2>⚡ Manual Transaction — What-If</h2>
+      <form class="manual-form" id="manualForm" autocomplete="off">
+        <div class="form-group">
+          <label for="mAmount">Amount (₹)</label>
+          <input type="number" id="mAmount" placeholder="e.g. 2500" min="1" step="1" required />
+        </div>
+        <div class="form-group">
+          <label for="mCode">Failure Code</label>
+          <select id="mCode" required>
+            <option value="">— select —</option>
+            <option>insufficient_funds</option>
+            <option>card_declined</option>
+            <option>do_not_honor</option>
+            <option>generic_decline</option>
+            <option>bank_timeout</option>
+            <option>gateway_timeout</option>
+            <option>network_error</option>
+            <option>expired_mandate</option>
+            <option>risk_decline</option>
+            <option>invalid_vpa</option>
+            <option>closed_account</option>
+            <option>stolen_card</option>
+            <option>lost_card</option>
+            <option>card_expired</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="mMethod">Payment Method</label>
+          <select id="mMethod" required>
+            <option value="">— select —</option>
+            <option>card</option>
+            <option>upi</option>
+            <option>netbanking</option>
+            <option>wallet</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="mRetry">Retries so far</label>
+          <input type="number" id="mRetry" placeholder="0" min="0" max="10" value="0" />
+        </div>
+        <!-- Searchable bank combobox -->
+        <div class="form-group">
+          <label for="mBankInput">Bank Name</label>
+          <div class="bank-combo" id="bankCombo">
+            <input
+              type="text"
+              id="mBankInput"
+              placeholder="Type to search…"
+              autocomplete="off"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            />
+            <!-- Hidden field carries the committed value for the submit handler -->
+            <input type="hidden" id="mBank" />
+            <div class="bank-dropdown" id="bankDropdown" role="listbox"></div>
+          </div>
+        </div>
+      </form>
+      <div class="form-footer">
+        <label class="dry-run-toggle" id="dryToggle">
+          <input type="checkbox" id="dryRun" />
+          Dry run (simulate only — don't execute or log)
+        </label>
+        <button class="btn-submit" id="btnSubmit" type="button">Run</button>
+      </div>
+      <div class="manual-error" id="manualError"></div>
+    </section>
+
+    <!-- ── Executive Report ── -->
+    <div class="report-bar">
+      <button class="btn-report" id="btnReport">📊 Generate Executive Report</button>
+    </div>
+    <section class="report-panel" id="reportPanel" aria-label="Executive summary report">
+      <h2>📊 Executive Summary</h2>
+      <div id="reportContent"></div>
+    </section>
+
     <!-- ── Transaction feed ── -->
     <div class="feed-wrap">
       <div class="feed" id="feed" role="feed" aria-live="polite" aria-label="Transaction events">
@@ -437,7 +514,7 @@
           <div class="ei">⚡</div>
           <strong>Dashboard idle — waiting for events</strong>
           <p>
-            Trigger a transaction in a second terminal:<br>
+            Use the manual entry above or trigger a transaction in a second terminal:<br>
             <code>python demo/seed_failure_case.py recover</code>
           </p>
         </div>
@@ -456,17 +533,17 @@
 
     const shortId = (id) => {
       const s = String(id || "");
-      return s.length > 13 ? s.slice(0, 8) + "…" : s;
+      return s.length > 18 ? s.slice(0, 13) + "…" : s;
     };
 
     /* ── Action label map ── */
     const ACTION_LABEL = {
-      RETRY_IMMEDIATE:        "retry_payment",
-      RETRY_DELAYED_24H:      "retry_payment (delayed 24h)",
-      RETRY_DELAYED_72H:      "retry_payment (delayed 72h)",
-      SEND_NUDGE:             "send_nudge",
-      ESCALATE_HUMAN:         "escalate_human",
-      NO_ACTION_UNRECOVERABLE:"no_action",
+      RETRY_IMMEDIATE:         "retry_payment",
+      RETRY_DELAYED_24H:       "retry_payment (delayed 24h)",
+      RETRY_DELAYED_72H:       "retry_payment (delayed 72h)",
+      SEND_NUDGE:              "send_nudge",
+      ESCALATE_HUMAN:          "escalate_human",
+      NO_ACTION_UNRECOVERABLE: "no_action",
     };
 
     /* ── Policy summary line ── */
@@ -475,6 +552,8 @@
       const attempt = rec.retry_attempt_number || 0;
       const action  = rec.final_action_taken;
       if (action === "ESCALATE_HUMAN") {
+        if (rec.low_confidence_override_fired)
+          return `low-confidence gate — routed to human review (${attempt}/${cap} attempts)`;
         return rec.override_fired
           ? `retry blocked — safety override fired (${attempt}/${cap} attempts used)`
           : `escalate to human (${attempt}/${cap} attempts used)`;
@@ -487,50 +566,106 @@
 
     /* ── Result summary line ── */
     function resultLine(rec) {
+      if (rec.simulation_only) return { text: "simulation only — no action taken, audit log unchanged", cls: "" };
       const recovered = Number(rec.amount_recovered || 0);
       const status    = (rec.action_result && rec.action_result.status) || "";
       const action    = rec.final_action_taken;
-      if (recovered > 0) return { text: `recovered ${inr(recovered)}`, cls: "amount-hi" };
+      if (recovered > 0)                                 return { text: `recovered ${inr(recovered)}`, cls: "amount-hi" };
       if (status === "escalated" || action === "ESCALATE_HUMAN")
         return { text: "escalated to a human — no retry loop", cls: "stop-hi" };
-      if (action === "NO_ACTION_UNRECOVERABLE")
-        return { text: "unrecoverable — marked closed, no further retries", cls: "stop-hi" };
-      if (status === "nudge_logged") return { text: "nudge queued — awaiting customer action", cls: "" };
-      if (status === "deferred")     return { text: "held for backoff — not hammering the bank", cls: "" };
+      if (action === "NO_ACTION_UNRECOVERABLE")          return { text: "unrecoverable — marked closed, no further retries", cls: "stop-hi" };
+      if (status === "nudge_logged")                     return { text: "nudge queued — awaiting customer action", cls: "" };
+      if (status === "deferred")                         return { text: "held for backoff — not hammering the bank", cls: "" };
       return { text: "not recovered this cycle", cls: "" };
     }
 
-    /* ── Build the 5 step rows ── */
+    /* ── Row-level badge/dot classification ── */
+    function rowStyle(rec) {
+      const isDryRun  = Boolean(rec.simulation_only || rec.dry_run);
+      const recovered = !isDryRun && Number(rec.amount_recovered || 0) > 0;
+      const action    = rec.final_action_taken || "";
+      if (isDryRun)   return { cls: "sim",   label: "⚗ simulation" };
+      if (recovered)  return { cls: "ok",    label: "✓ recovered" };
+      if (action === "ESCALATE_HUMAN")          return { cls: "bad",   label: "↑ escalated" };
+      if (action === "NO_ACTION_UNRECOVERABLE") return { cls: "bad",   label: "✗ stopped" };
+      if (action === "SEND_NUDGE")              return { cls: "nudge", label: "✉ nudged" };
+      return { cls: "warn", label: "○ open" };
+    }
+
+    /* ── Build the step rows ── */
     function stepsFor(rec) {
+      const isDryRun = Boolean(rec.simulation_only || rec.dry_run);
       const code   = rec.failure_code || "unknown";
       const cause  = rec.predicted_root_cause || "UNKNOWN";
       const conf   = pct(rec.classifier_confidence);
       const action = ACTION_LABEL[rec.final_action_taken] || (rec.final_action_taken || "").toLowerCase();
       const result = resultLine(rec);
-      return [
-        {
-          label: "Transaction",
-          text:  `Transaction <em>${shortId(rec.transaction_id)}</em> failed (<em>${code}</em>)`,
-        },
-        {
-          label: "Classifier",
-          text:  `<em>${cause}</em> — ${conf}% confidence`,
-        },
-        {
-          label: "Policy",
-          text:  policyLine(rec),
-        },
-        {
-          label: "Action",
-          text:  `<em>${action}</em>`,
-        },
-        {
-          label: "Result",
-          text:  result.cls
-            ? `<em class="${result.cls}">${result.text}</em>`
-            : result.text,
-        },
+      const steps = [
+        { label: "Transaction", text: `Transaction <em>${shortId(rec.transaction_id)}</em> failed (<em>${code}</em>)` },
+        { label: "Classifier",  text: `<em>${cause}</em> — ${conf}% confidence` },
+        { label: "Policy",      text: policyLine(rec) },
       ];
+      if (!isDryRun) {
+        steps.push({ label: "Action", text: `<em>${action}</em>` });
+        steps.push({
+          label: "Result",
+          text: result.cls ? `<em class="${result.cls}">${result.text}</em>` : result.text,
+        });
+      } else {
+        steps.push({
+          label: "Decision",
+          text: `<em>${action}</em> — <span style="color:var(--sim)">simulation; no action taken</span>`,
+        });
+      }
+      return steps;
+    }
+
+    /* ── Build probability breakdown bars ── */
+    function buildProbaSection(rec) {
+      const breakdown = rec.proba_breakdown;
+      if (!breakdown || Object.keys(breakdown).length === 0) return null;
+
+      const wrap = document.createElement("div");
+      wrap.className = "proba-wrap";
+
+      const lbl = document.createElement("div");
+      lbl.className = "proba-label";
+      lbl.textContent = "Confidence breakdown";
+      wrap.appendChild(lbl);
+
+      const topCls = rec.predicted_root_cause;
+      const sorted = Object.entries(breakdown).sort((a, b) => b[1] - a[1]);
+
+      sorted.forEach(([cls, prob]) => {
+        const row = document.createElement("div");
+        row.className = "proba-row";
+
+        const clsEl = document.createElement("div");
+        clsEl.className = "proba-cls";
+        clsEl.textContent = cls;
+
+        const track = document.createElement("div");
+        track.className = "proba-track";
+
+        const fill = document.createElement("div");
+        fill.className = "proba-fill" + (cls === topCls ? " top" : "");
+        fill.style.width = "0%";
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => { fill.style.width = (prob * 100).toFixed(1) + "%"; });
+        });
+        track.appendChild(fill);
+
+        const pctEl = document.createElement("div");
+        pctEl.className = "proba-pct";
+        pctEl.textContent = (prob * 100).toFixed(1) + "%";
+
+        row.appendChild(clsEl);
+        row.appendChild(track);
+        row.appendChild(pctEl);
+        wrap.appendChild(row);
+      });
+
+      return wrap;
     }
 
     /* ── State ── */
@@ -538,113 +673,145 @@
     const emptyEl   = document.getElementById("emptyState");
     const connPill  = document.getElementById("connPill");
     const connLabel = document.getElementById("connLabel");
-    const latest    = new Map();   // transaction_id → record (deduplicates replays)
+    const latest    = new Map();
     let   emptyGone = false;
 
-    /* ── Connection indicator ── */
     function setConn(state, label) {
       connPill.className = "conn-pill " + state;
       connLabel.textContent = label;
     }
 
-    /* ── Stats refresh ── */
     function refreshStats() {
       let risk = 0, rec = 0;
       latest.forEach((r) => {
+        if (r.simulation_only || r.dry_run) return;
         risk += Number(r.amount || 0);
         rec  += Number(r.amount_recovered || 0);
       });
-      const n    = latest.size;
+      const n    = [...latest.values()].filter(r => !r.simulation_only && !r.dry_run).length;
       const rate = risk ? (rec / risk) * 100 : 0;
 
       document.getElementById("statN").textContent    = String(n);
-      document.getElementById("statNSub").textContent = n === 1 ? "processed" : "processed";
       document.getElementById("statRisk").textContent = inr(risk);
       document.getElementById("statRec").textContent  = inr(rec);
 
       const rateEl = document.getElementById("statRate");
-      rateEl.textContent  = rate.toFixed(1) + "%";
-      rateEl.className    = "value " +
+      rateEl.textContent = rate.toFixed(1) + "%";
+      rateEl.className   = "value " +
         (rate >= 30 ? "rate-good" : rate >= 10 ? "rate-warn" : "rate-danger");
     }
 
-    /* ── Render a single transaction card ── */
+    /* ── Toggle card open/closed ── */
+    function toggleCard(card) {
+      const isOpen = card.classList.toggle("open");
+
+      // Animate steps in when opening for the first time
+      if (isOpen) {
+        const stepEls = card.querySelectorAll(".step:not(.show)");
+        stepEls.forEach((el, i) => {
+          setTimeout(() => el.classList.add("show"), 60 + i * 120);
+        });
+        // Trigger probability bar animation too
+        card.querySelectorAll(".proba-fill[data-prob]").forEach((fill) => {
+          const w = fill.dataset.prob;
+          requestAnimationFrame(() => { fill.style.width = w; });
+        });
+      }
+    }
+
+    /* ── Render a single transaction card (COLLAPSED by default) ── */
     function renderCard(rec, animate) {
-      // Remove empty-state placeholder
       if (!emptyGone && emptyEl && emptyEl.parentNode) {
         emptyEl.remove();
         emptyGone = true;
       }
 
-      const recovered = Number(rec.amount_recovered || 0) > 0;
-      const escalated =
+      const isDryRun  = Boolean(rec.simulation_only || rec.dry_run);
+      const recovered = !isDryRun && Number(rec.amount_recovered || 0) > 0;
+      const escalated = !isDryRun && (
         rec.final_action_taken === "ESCALATE_HUMAN" ||
-        rec.final_action_taken === "NO_ACTION_UNRECOVERABLE";
+        rec.final_action_taken === "NO_ACTION_UNRECOVERABLE"
+      );
+      const style = rowStyle(rec);
 
-      /* Card element */
+      /* ── Card element ── */
       const card = document.createElement("article");
       card.className =
         "card" +
-        (recovered ? " recovered" : escalated ? " escalated" : "") +
-        (!animate ? " replay" : "");
+        (isDryRun  ? " simulation" :
+         recovered ? " recovered"  :
+         escalated ? " escalated"  : "") +
+        (!animate  ? " replay" : "");
       card.dataset.txn = rec.transaction_id;
 
-      /* Header */
-      const pillCls  = recovered ? "ok" : escalated ? "bad" : "warn";
-      const pillText = recovered
-        ? "✓ recovered"
-        : rec.final_action_taken === "ESCALATE_HUMAN"
-          ? "↑ escalated"
-          : rec.final_action_taken === "NO_ACTION_UNRECOVERABLE"
-            ? "✗ stopped"
-            : "○ open";
+      /* ── Compact row (always visible) ── */
+      const row = document.createElement("div");
+      row.className = "card-row";
+      row.setAttribute("role", "button");
+      row.setAttribute("tabindex", "0");
+      row.setAttribute("aria-expanded", "false");
+      row.title = rec.transaction_id;   // full id on hover
 
-      const head = document.createElement("div");
-      head.className = "card-head";
-      head.innerHTML =
-        `<div class="card-left">
-           <span class="txn-id">${rec.transaction_id}</span>
-           ${!animate ? '<span class="replay-badge">replay</span>' : ""}
-         </div>
-         <div class="card-right">
-           <span class="amount">${inr(rec.amount)}</span>
-           <span class="pill ${pillCls}">${pillText}</span>
+      row.innerHTML =
+        `<div class="row-dot ${style.cls}"></div>
+         <span class="row-id">${shortId(rec.transaction_id)}</span>
+         ${isDryRun   ? '<span class="sim-badge">SIM</span>'     : ""}
+         ${!animate && !isDryRun ? '<span class="replay-badge">replay</span>' : ""}
+         <div class="row-right">
+           <span class="row-amount">${inr(rec.amount)}</span>
+           <span class="row-badge ${style.cls}">${style.label}</span>
+           <span class="row-chevron">▾</span>
          </div>`;
-      card.appendChild(head);
+
+      /* click or keyboard to expand/collapse */
+      function handleToggle() {
+        toggleCard(card);
+        row.setAttribute("aria-expanded", String(card.classList.contains("open")));
+      }
+      row.addEventListener("click", handleToggle);
+      row.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleToggle(); }
+      });
+
+      card.appendChild(row);
+
+      /* ── Detail panel (hidden until expanded) ── */
+      const detail = document.createElement("div");
+      detail.className = "card-detail";
 
       /* Steps */
       const stepsWrap = document.createElement("div");
       stepsWrap.className = "steps";
-      const rows = stepsFor(rec);
-      rows.forEach((row, i) => {
+      stepsFor(rec).forEach((stepRow, i) => {
         const el = document.createElement("div");
-        el.className = `step s${i}${animate ? "" : " show"}`;
+        // steps start invisible regardless of animate; they animate in when the card opens
+        el.className = `step s${i}`;
         el.innerHTML =
           `<div class="rail">
              <div class="rail-dot"></div>
              <div class="rail-line"></div>
            </div>
            <div class="step-body">
-             <div class="step-label">${row.label}</div>
-             <div class="step-text">${row.text}</div>
+             <div class="step-label">${stepRow.label}</div>
+             <div class="step-text">${stepRow.text}</div>
            </div>`;
         stepsWrap.appendChild(el);
       });
-      card.appendChild(stepsWrap);
+      detail.appendChild(stepsWrap);
+
+      /* Probability bars */
+      const probaSection = buildProbaSection(rec);
+      if (probaSection) detail.appendChild(probaSection);
+
+      card.appendChild(detail);
       feed.appendChild(card);
 
-      /* Animate steps in sequence */
+      /* Scroll new live cards into view */
       if (animate) {
-        const stepEls = stepsWrap.querySelectorAll(".step");
-        stepEls.forEach((el, i) => {
-          setTimeout(() => el.classList.add("show"), 300 + i * 480);
+        requestAnimationFrame(() => {
+          card.scrollIntoView({ behavior: "smooth", block: "end" });
         });
       }
-
-      /* Auto-scroll */
-      requestAnimationFrame(() => {
-        card.scrollIntoView({ behavior: animate ? "smooth" : "instant", block: "end" });
-      });
     }
 
     /* ── Handle an incoming audit record ── */
@@ -653,8 +820,7 @@
       const tid = String(rec.transaction_id);
 
       if (latest.has(tid)) {
-        // Update existing card in place (e.g. a live trigger over an already-replayed row)
-        const existing = feed.querySelector(`[data-txn="${tid}"]`);
+        const existing = feed.querySelector(`[data-txn="${CSS.escape(tid)}"]`);
         if (existing) existing.remove();
       }
       latest.set(tid, rec);
@@ -673,15 +839,12 @@
         retryDelay = 1000;
         setConn("live", "live · tailing audit_log.jsonl");
       };
-
       ws.onclose = () => {
         setConn("dead", `disconnected · reconnecting in ${(retryDelay / 1000).toFixed(1)}s`);
         setTimeout(connect, retryDelay);
         retryDelay = Math.min(retryDelay * 1.5, 8000);
       };
-
       ws.onerror = () => ws.close();
-
       ws.onmessage = (ev) => {
         let msg;
         try { msg = JSON.parse(ev.data); } catch { return; }
@@ -692,6 +855,272 @@
     }
 
     connect();
+
+    /* ═══════════════════════════════════════════════════════════════
+       BANK COMBOBOX — searchable dropdown backed by /bank-names API
+       ═══════════════════════════════════════════════════════════════ */
+    const bankInput    = document.getElementById("mBankInput");
+    const bankHidden   = document.getElementById("mBank");
+    const bankDropdown = document.getElementById("bankDropdown");
+
+    let allBanks      = [];   // full list fetched from server
+    let activeIdx     = -1;   // keyboard navigation index
+
+    /* Fetch the bank list from the server (live from the CSV) */
+    async function loadBankNames() {
+      try {
+        const resp = await fetch("/bank-names");
+        if (resp.ok) allBanks = await resp.json();
+      } catch (_) { /* fall back to empty list */ }
+      renderBankOptions("");
+    }
+    loadBankNames();
+
+    function renderBankOptions(query) {
+      const q = query.trim().toLowerCase();
+      const matches = q
+        ? allBanks.filter(b => b.toLowerCase().includes(q))
+        : allBanks;
+
+      bankDropdown.innerHTML = "";
+      activeIdx = -1;
+
+      if (matches.length === 0) {
+        const noMatch = document.createElement("div");
+        noMatch.className = "bank-option no-match";
+        noMatch.textContent = q ? `No banks match "${query}"` : "No banks loaded";
+        bankDropdown.appendChild(noMatch);
+        return;
+      }
+
+      matches.forEach((bank) => {
+        const opt = document.createElement("div");
+        opt.className = "bank-option";
+        opt.setAttribute("role", "option");
+        opt.textContent = bank;
+        opt.addEventListener("mousedown", (e) => {
+          e.preventDefault();  // don't blur the input before we commit
+          selectBank(bank);
+        });
+        bankDropdown.appendChild(opt);
+      });
+    }
+
+    function selectBank(name) {
+      bankInput.value  = name;
+      bankHidden.value = name;
+      closeDropdown();
+    }
+
+    function openDropdown() {
+      bankDropdown.classList.add("open");
+      bankInput.setAttribute("aria-expanded", "true");
+    }
+
+    function closeDropdown() {
+      bankDropdown.classList.remove("open");
+      bankInput.setAttribute("aria-expanded", "false");
+      activeIdx = -1;
+    }
+
+    function updateActiveOption(newIdx) {
+      const opts = bankDropdown.querySelectorAll(".bank-option:not(.no-match)");
+      opts.forEach(o => o.classList.remove("active"));
+      if (newIdx >= 0 && newIdx < opts.length) {
+        opts[newIdx].classList.add("active");
+        opts[newIdx].scrollIntoView({ block: "nearest" });
+      }
+      activeIdx = newIdx;
+    }
+
+    bankInput.addEventListener("focus", () => {
+      renderBankOptions(bankInput.value);
+      openDropdown();
+    });
+
+    bankInput.addEventListener("input", () => {
+      bankHidden.value = "";   // clear committed value while typing
+      renderBankOptions(bankInput.value);
+      openDropdown();
+    });
+
+    bankInput.addEventListener("blur", () => {
+      // Small delay so mousedown on an option fires first
+      setTimeout(() => {
+        closeDropdown();
+        // If the user typed a value that exactly matches a bank name, commit it
+        const typed = bankInput.value.trim();
+        const match = allBanks.find(b => b.toLowerCase() === typed.toLowerCase());
+        if (match) { bankInput.value = match; bankHidden.value = match; }
+        else if (!bankHidden.value) bankHidden.value = typed;  // allow free-text fallback
+      }, 150);
+    });
+
+    bankInput.addEventListener("keydown", (e) => {
+      const opts = bankDropdown.querySelectorAll(".bank-option:not(.no-match)");
+      if (!bankDropdown.classList.contains("open")) {
+        if (e.key === "ArrowDown" || e.key === "Enter") { openDropdown(); return; }
+      }
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        updateActiveOption(Math.min(activeIdx + 1, opts.length - 1));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        updateActiveOption(Math.max(activeIdx - 1, 0));
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (activeIdx >= 0 && opts[activeIdx]) {
+          selectBank(opts[activeIdx].textContent);
+        }
+      } else if (e.key === "Escape") {
+        closeDropdown();
+      }
+    });
+
+    /* ═══════════════════════════════════════════════════════════════
+       MANUAL TRANSACTION FORM
+       ═══════════════════════════════════════════════════════════════ */
+    const dryRunCb  = document.getElementById("dryRun");
+    const dryToggle = document.getElementById("dryToggle");
+    const btnSubmit = document.getElementById("btnSubmit");
+    const errBox    = document.getElementById("manualError");
+
+    dryRunCb.addEventListener("change", () => {
+      const isDry = dryRunCb.checked;
+      dryToggle.classList.toggle("active", isDry);
+      btnSubmit.classList.toggle("dry", isDry);
+      btnSubmit.textContent = isDry ? "Simulate" : "Run";
+    });
+
+    btnSubmit.addEventListener("click", async () => {
+      errBox.style.display = "none";
+      const amount  = parseFloat(document.getElementById("mAmount").value);
+      const code    = document.getElementById("mCode").value;
+      const method  = document.getElementById("mMethod").value;
+      const retries = parseInt(document.getElementById("mRetry").value || "0", 10);
+      // bankHidden carries the committed value; fall back to the visible input text
+      const bank    = (bankHidden.value || bankInput.value).trim() || "UNKNOWN_BANK";
+      const dry     = dryRunCb.checked;
+
+      if (!amount || amount <= 0 || !code || !method) {
+        errBox.textContent = "Please fill in Amount, Failure Code, and Payment Method.";
+        errBox.style.display = "block";
+        return;
+      }
+
+      btnSubmit.classList.add("loading");
+      btnSubmit.disabled = true;
+
+      try {
+        const resp = await fetch("/manual-transaction", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount, failure_code: code, payment_method: method,
+            retry_count_so_far: retries, bank_name: bank, dry_run: dry,
+          }),
+        });
+        const data = await resp.json();
+        if (!resp.ok) {
+          errBox.textContent = data.detail || "Server error";
+          errBox.style.display = "block";
+          return;
+        }
+        if (dry) {
+          // Dry-run cards are never written to the audit log so the WS won't pick them up
+          onRecord(data, false);
+        }
+        // Live-run records appear automatically via the WS feed
+      } catch (err) {
+        errBox.textContent = "Network error: " + err.message;
+        errBox.style.display = "block";
+      } finally {
+        btnSubmit.classList.remove("loading");
+        btnSubmit.disabled = false;
+      }
+    });
+
+    /* ═══════════════════════════════════════════════════════════════
+       EXECUTIVE REPORT
+       ═══════════════════════════════════════════════════════════════ */
+    const btnReport     = document.getElementById("btnReport");
+    const reportPanel   = document.getElementById("reportPanel");
+    const reportContent = document.getElementById("reportContent");
+
+    btnReport.addEventListener("click", async () => {
+      btnReport.classList.add("loading");
+      btnReport.disabled = true;
+      try {
+        const resp = await fetch("/report", { method: "POST" });
+        const data = await resp.json();
+        if (!resp.ok) { alert("Report error: " + (data.detail || "unknown")); return; }
+        renderReport(data);
+        reportPanel.classList.add("visible");
+        reportPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (err) {
+        alert("Network error: " + err.message);
+      } finally {
+        btnReport.classList.remove("loading");
+        btnReport.disabled = false;
+      }
+    });
+
+    function renderReport(r) {
+      const fp = r.false_positive_cost || {};
+      reportContent.innerHTML = "";
+
+      const grid = document.createElement("div");
+      grid.className = "report-grid";
+      grid.innerHTML = `
+        <div class="rstat"><div class="rl">Transactions</div><div class="rv">${r.total_transactions_processed ?? "—"}</div></div>
+        <div class="rstat"><div class="rl">At Risk</div><div class="rv warn">${inr(r.total_amount_at_risk_inr)}</div></div>
+        <div class="rstat"><div class="rl">Recovered</div><div class="rv good">${inr(r.total_amount_recovered_inr)}</div></div>
+        <div class="rstat"><div class="rl">Recovery Rate</div><div class="rv info">${(r.recovery_rate_pct ?? 0).toFixed(2)}%</div></div>
+        <div class="rstat"><div class="rl">Wasted Retry Cost</div><div class="rv bad">${inr(r.wasted_retry_cost_inr)}</div></div>
+        <div class="rstat"><div class="rl">FP/FN Exposure</div><div class="rv bad">${fp.available ? inr(fp.fp_fn_cost_inr) : "N/A"}</div></div>
+        <div class="rstat"><div class="rl">Low-Confidence Escalations</div><div class="rv violet">${r.low_confidence_override_fired_count ?? 0}</div></div>
+        <div class="rstat"><div class="rl">Risk-Decline Overrides</div><div class="rv bad">${r.risk_decline_override_count ?? 0}</div></div>
+        <div class="rstat"><div class="rl">Retry-Cap Escalations</div><div class="rv warn">${r.retry_cap_override_count ?? 0}</div></div>
+        <div class="rstat"><div class="rl">Normal Path Decisions</div><div class="rv good">${r.normal_path_count ?? 0}</div></div>
+      `;
+      reportContent.appendChild(grid);
+
+      const actSec = document.createElement("div");
+      actSec.className = "report-section";
+      actSec.innerHTML = "<h3>Actions taken</h3>";
+      const tbl = document.createElement("table");
+      tbl.className = "report-table";
+      tbl.innerHTML = "<thead><tr><th>Action</th><th>Count</th><th>Recovered (₹)</th></tr></thead>";
+      const tbody = document.createElement("tbody");
+      Object.entries(r.actions_with_recovery || {})
+        .sort((a, b) => b[1].count - a[1].count)
+        .forEach(([act, meta]) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${act}</td><td>${meta.count}</td><td>${meta.recovered_inr > 0 ? inr(meta.recovered_inr) : "—"}</td>`;
+          tbody.appendChild(tr);
+        });
+      tbl.appendChild(tbody);
+      actSec.appendChild(tbl);
+      reportContent.appendChild(actSec);
+
+      const unresSec = document.createElement("div");
+      unresSec.className = "report-section";
+      unresSec.innerHTML = "<h3>Unresolved / escalated breakdown</h3>";
+      const tbl2 = document.createElement("table");
+      tbl2.className = "report-table";
+      tbl2.innerHTML = "<thead><tr><th>Status</th><th>Count</th></tr></thead>";
+      const tbody2 = document.createElement("tbody");
+      Object.entries(r.unresolved_kind_breakdown || {})
+        .sort((a, b) => b[1] - a[1])
+        .forEach(([kind, count]) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${kind}</td><td>${count}</td>`;
+          tbody2.appendChild(tr);
+        });
+      tbl2.appendChild(tbody2);
+      unresSec.appendChild(tbl2);
+      reportContent.appendChild(unresSec);
+    }
   </script>
 </body>
 </html>

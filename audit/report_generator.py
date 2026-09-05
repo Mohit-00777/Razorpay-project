@@ -202,6 +202,25 @@ def build_report(rows: list[dict[str, Any]] | None = None) -> dict[str, Any]:
         # ── Phase-2 false-positive cost ──
         "false_positive_cost":      phase2_false_positive_cost(),
 
+        # ── Override / gate breakdown ──
+        "risk_decline_override_count": sum(
+            1 for r in unique
+            if r.get("override_fired") and not r.get("low_confidence_override_fired")
+            and str(r.get("failure_code") or "") == "risk_decline"
+        ),
+        "retry_cap_override_count": sum(
+            1 for r in unique
+            if r.get("override_fired") and not r.get("low_confidence_override_fired")
+            and str(r.get("failure_code") or "") != "risk_decline"
+        ),
+        "low_confidence_override_fired_count": sum(
+            1 for r in unique if r.get("low_confidence_override_fired")
+        ),
+        "normal_path_count": sum(
+            1 for r in unique
+            if not r.get("override_fired") and not r.get("low_confidence_override_fired")
+        ),
+
         # ── Unresolved ──
         "unresolved_or_escalated_count": len(unresolved),
         "unresolved_kind_breakdown":     kinds,
@@ -273,6 +292,15 @@ def print_report(report: dict[str, Any]) -> None:
         print("    PERMANENT_FAILURE (false negatives)")
     else:
         print(f"  [!] {fp.get('note')}")
+
+    print()
+    print(_SEP)
+    print("  DECISION PATH BREAKDOWN")
+    print(_SEP)
+    print(f"  risk_decline override:         {report.get('risk_decline_override_count', 0)}")
+    print(f"  retry-cap override:            {report.get('retry_cap_override_count', 0)}")
+    print(f"  low-confidence gate:           {report.get('low_confidence_override_fired_count', 0)}")
+    print(f"  normal path (model + policy):  {report.get('normal_path_count', 0)}")
 
     print()
     print(_SEP)

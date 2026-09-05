@@ -2,9 +2,18 @@
 
 from __future__ import annotations
 
+import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
+
+# Make model/ importable so we can reference the shared threshold constant.
+_ROOT = Path(__file__).resolve().parents[1]
+if str(_ROOT / "model") not in sys.path:
+    sys.path.insert(0, str(_ROOT / "model"))
+
+from predict import CONFIDENCE_THRESHOLD  # noqa: E402
 
 MAX_RETRY_ATTEMPTS = 3
 BACKOFF_HOURS = (2, 24, 72)  # after 0, 1, 2 prior retries
@@ -21,6 +30,7 @@ class PolicyDecision:
     final_action: str
     policy_reason: str
     override_fired: bool
+    low_confidence_override_fired: bool
     retry_attempt_number: int
     backoff_hours_required: int | None
     backoff_elapsed: bool
@@ -57,11 +67,20 @@ def decide(
     model_recommended_action: str,
     now: datetime | None = None,
 ) -> PolicyDecision:
-    """Return the policy-enforced action plus a plain-English reason."""
+    """Return the policy-enforced action plus a plain-English reason.
+
+    Override priority (highest → lowest):
+      1. risk_decline hard-block  → override_fired=True
+      2. low model confidence     → low_confidence_override_fired=True
+      3. retry-cap escalation     → override_fired=True
+      4. normal path              → both False
+    """
     failure_code = str(transaction.get("failure_code") or "")
     retry_so_far = int(transaction.get("retry_count_so_far") or 0)
+    confidence = float(transaction.get("classifier_confidence") or 1.0)
     recommended = str(model_recommended_action)
 
+    # ── Rule 1: risk_decline hard-block (highest priority) ────────────────────
     if failure_code == RISK_FAILURE_CODE:
         return PolicyDecision(
             final_action="ESCALATE_HUMAN",
@@ -71,12 +90,33 @@ def decide(
                 f"even though the classifier recommended {recommended}."
             ),
             override_fired=True,
+            low_confidence_override_fired=False,
             retry_attempt_number=retry_so_far,
             backoff_hours_required=None,
             backoff_elapsed=True,
             execute_retry=False,
         )
 
+    # ── Rule 2: low model confidence gate ─────────────────────────────────────
+    if confidence < CONFIDENCE_THRESHOLD:
+        return PolicyDecision(
+            final_action="ESCALATE_HUMAN",
+            policy_reason=(
+                f"LOW CONFIDENCE OVERRIDE fired: classifier top-class probability "
+                f"{confidence:.4f} is below threshold {CONFIDENCE_THRESHOLD}. "
+                f"Routing to human review instead of following the model's "
+                f"recommendation ({recommended}). Increase model training data or "
+                f"lower CONFIDENCE_THRESHOLD to reduce human escalation rate."
+            ),
+            override_fired=False,
+            low_confidence_override_fired=True,
+            retry_attempt_number=retry_so_far,
+            backoff_hours_required=None,
+            backoff_elapsed=True,
+            execute_retry=False,
+        )
+
+    # ── Rule 3: retry-cap escalation ─────────────────────────────────────────
     if recommended in RETRY_ACTIONS and retry_so_far >= MAX_RETRY_ATTEMPTS:
         return PolicyDecision(
             final_action="ESCALATE_HUMAN",
@@ -86,12 +126,14 @@ def decide(
                 f"no further retries. Classifier had recommended {recommended}."
             ),
             override_fired=True,
+            low_confidence_override_fired=False,
             retry_attempt_number=retry_so_far,
             backoff_hours_required=None,
             backoff_elapsed=True,
             execute_retry=False,
         )
 
+    # ── Rule 4: normal path ───────────────────────────────────────────────────
     if recommended not in RETRY_ACTIONS:
         used_model = recommended == model_recommended_action
         return PolicyDecision(
@@ -104,6 +146,7 @@ def decide(
                 else f"Using policy action {recommended}."
             ),
             override_fired=False,
+            low_confidence_override_fired=False,
             retry_attempt_number=retry_so_far,
             backoff_hours_required=None,
             backoff_elapsed=True,
@@ -126,6 +169,7 @@ def decide(
                 "not calling the payment API this cycle."
             ),
             override_fired=False,
+            low_confidence_override_fired=False,
             retry_attempt_number=retry_so_far,
             backoff_hours_required=backoff,
             backoff_elapsed=False,
@@ -147,8 +191,10 @@ def decide(
             )
         ),
         override_fired=False,
+        low_confidence_override_fired=False,
         retry_attempt_number=next_attempt,
         backoff_hours_required=backoff,
         backoff_elapsed=True,
         execute_retry=True,
     )
+
